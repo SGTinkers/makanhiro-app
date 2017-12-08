@@ -14,13 +14,18 @@ import { Button,
 
 import { Actions } from 'react-native-router-flux';
 
+// import style
+import styles from '../styles/MainStyles';
+
 export default class SinglePost extends Component {
 
 
 	render() {
 		const editOrLike = 'create';
 		const post = this.props.post;
-		// console.log(post.location);
+
+		const { pin, location, time } = styles;
+
 		if (!post){
 			return <Button></Button>;
 		} else {
@@ -33,13 +38,13 @@ export default class SinglePost extends Component {
 							<Body>
 								<Grid>
 									<Col size={1}>
-										<Icon name='md-pin' style={{fontSize: 12, marginTop: 3, color: '#777676'}}/>
+										<Icon name='md-pin' style={pin}/>
 									</Col>
 									<Col size={11}>
-										<Text style={{fontSize: 12, fontWeight: '500', color: '#777676', marginTop: 3}}>
+										<Text style={location}>
 											{post.location}
 										</Text>
-										<Text style={{fontSize: 9, fontWeight: '500', color: '#999999'}}>
+										<Text style={time}>
 											10 minutes ago
 										</Text>
 									</Col>

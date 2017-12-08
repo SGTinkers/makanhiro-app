@@ -3,7 +3,7 @@ import React from 'react';
 import { Stack, Scene, Router } from 'react-native-router-flux';
 
 /* header */
-import TrueHeader from './components/TrueHeader';
+import Header from './components/Header';
 
 /* content */
 import Login from './components/Login';
@@ -18,10 +18,10 @@ const RouterComponent = () => {
 	  <Router>
 	      <Stack key="root">
 	        {/* <Scene key="login" component={Login} title="login" initial /> */}
-	      	<Scene key="browsePost" component={BrowsePost} navBar={() => <TrueHeader />} initial />
-		      <Scene key="viewPost" component={ViewPost} navBar={() => <TrueHeader header={'View Post'}/>} />
-	      	<Scene key="createPost" component={CreatePost} navBar={() => <TrueHeader header={'Create Post'}/>} />
-	      	<Scene key="editPost" component={EditPost} navBar={() => <TrueHeader header={'Edit Post'}/>} />
+	      	<Scene key="browsePost" component={BrowsePost} navBar={() => <Header />} initial />
+		      <Scene key="viewPost" component={ViewPost} navBar={() => <Header header={'View Post'}/>} />
+	      	<Scene key="createPost" component={CreatePost} navBar={() => <Header header={'Create Post'}/>} />
+	      	<Scene key="editPost" component={EditPost} navBar={() => <Header header={'Edit Post'}/>} />
 	      </Stack>
 	    </Router>
 	);

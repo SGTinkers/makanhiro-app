@@ -26,7 +26,7 @@ export default class App extends Component {
 
       return (
 
-        <Container>
+        <Container style={{flex: 1}}>
           <Router />
         </Container>
       );

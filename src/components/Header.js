@@ -15,11 +15,7 @@ export default class TrueHeader extends Component {
 
   render() {
     let headTitle = (this.props.header) ? (<Text style={{fontSize: 18}}>{this.props.header}</Text>) : (<Image source={require('../../icon/logo.png')} style={styles.img} resizeMode='contain'/>);
-    // let headTitle = (<Text style={{fontSize: 18}}>{this.props.header}</Text>);
-    // let headTitle = (<Image source={require('../../icon/logo.png')} style={styles.img} resizeMode='contain'/>);
 
-    // let sm = (this.props.header) ? 'lul' : 'no';
-    // console.log(sm)
     let leftIcon = (this.props.header) ? (<Icon button onPress={Actions.pop} name='ios-arrow-back-outline' style={{color: 'black'}}/>) : (<Icon name='menu' style={{color: 'black'}}/>);
     return (
       <Header style={styles.head}>
