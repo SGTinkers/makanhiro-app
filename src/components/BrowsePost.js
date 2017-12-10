@@ -13,7 +13,7 @@ import PostList from './PostList';
 const BrowsePost = () => {
 
 		const { btnCreatePostText, btnCreatePost } = styles;
-		
+
 		return (
 
 			<Container>

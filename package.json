@@ -28,7 +28,6 @@
     "react-native-fbsdk": "^0.6.3",
     "react-native-page-swiper": "^0.3.0",
     "react-native-router-flux": "^4.0.0-beta.22",
-    "react-native-snap-carousel": "^3.4.0",
     "react-native-swiper": "^1.5.13",
     "react-native-vector-icons": "^4.4.2"
   }

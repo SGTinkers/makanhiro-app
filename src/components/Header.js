@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet, PixelRatio } from 'react-native';
 import {
-         Header,
+         Header as OldHeader,
          Left,
          Button,
          Icon,
@@ -11,35 +11,35 @@ import {
 
 import { Actions } from 'react-native-router-flux';
 
-export default class TrueHeader extends Component {
+export default class Header extends Component {
 
   render() {
+    console.log(PixelRatio.get())
     let headTitle = (this.props.header) ? (<Text style={{fontSize: 18}}>{this.props.header}</Text>) : (<Image source={require('../../icon/logo.png')} style={styles.img} resizeMode='contain'/>);
 
     let leftIcon = (this.props.header) ? (<Icon button onPress={Actions.pop} name='ios-arrow-back-outline' style={{color: 'black'}}/>) : (<Icon name='menu' style={{color: 'black'}}/>);
     return (
-      <Header style={styles.head}>
+      <OldHeader style={styles.head}>
         <Left>
           <Button transparent>
             {leftIcon}
           </Button>
         </Left>
-        <Body style={{flex: 3}}>
-
-        {headTitle}
+        <Body>
+          {headTitle}
         </Body>
         <Right>
           <Button small transparent>
             <Icon ios='ios-notifications-outline' android='md-notifications' style={{color: 'black'}}/>
           </Button>
         </Right>
-      </Header>
+      </OldHeader>
     )
 
   }
 }
 
 const styles = StyleSheet.create({
-	head: {backgroundColor: 'white', height: 100},
-	img: {width: '100%', marginBottom: 10}
+	head: {backgroundColor: 'white', height: (PixelRatio.get() === 2) ? 60 : 100},
+	img: {width: '100%',  marginBottom: 10}
 });
