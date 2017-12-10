@@ -5,29 +5,31 @@ Save the food
 ## Getting Started
 
 1. npm install
-2. update xcode
-3. traverse to MakanHiro/node_modules/react-native-scripts/build/bin/crna-entry.js
-4. ensure line 27 is as follows: var _App = require('../../../../src/App');
-5. npm run ios (ensure Hardware model is: 7plus/6plus or iPhone X.
+2. npm run ios ( currently works best iPhone X/6plus/7plus screens )
 
 
 ### Prerequisites
 
-
+1. xcode updated to the latest version
+  1.1 all of their respective components are installed as well
 
 
 ### Installing
 
-A step by step series of examples that tell you have to get a development env running
-
-Update node_modules
+1. Update node_modules
 
 ```
 npm install
 ```
 
-run xcode simulator
+2. run xcode simulator
 
 ```
 npm run ios
+```
+
+or ( For Android Studio )
+
+```
+npm run android
 ```
