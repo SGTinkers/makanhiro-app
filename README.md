@@ -11,7 +11,7 @@ Save the food
 ### Prerequisites
 
 1. xcode updated to the latest version
-  1.1 all of their respective components are installed as well
+2. all of their respective components are installed as well
 
 
 ### Installing
