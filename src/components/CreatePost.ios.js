@@ -57,7 +57,7 @@ class CreatePost extends Component {
 		// const posterId = 'da448bf1d6c2c58d1cf08edb39b4fa28b71ddd8ec4d5f659287a8db1ff95594d';
 		let showDatePicker = this.state.showDatePicker ?
 			<DatePickerIOS
-				style={{ height: 150 }}
+				style={{ height: 200, zIndex: 2 }}
 				date={this.state.date} onDateChange={ (date) => this.setState({date}) }
 				mode="datetime" /> : <View />;
 		return (
