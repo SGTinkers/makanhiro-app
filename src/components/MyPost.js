@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Container, Content, Text } from 'native-base';
+import { Container, Content, Text, View } from 'native-base';
+import axios from 'axios';
 
 import SinglePost from './SinglePost';
 
@@ -12,36 +13,27 @@ export default class MyPost extends Component {
 			post: this.getMyPostOnly(),
 		})
 	}
-	getMyPostOnly(){
+	getMyPostOnly(user=null){
 
-		let DATETIME = new Date();
+		const postEntries = axios.get('http://174.138.26.61:8080/api/v1/post').then(response => this.setState({post: response.data}))
 
-		// Dummy data (will make API call)
-		let postEntries =
-			{_id: "YpsE746PQQh5gG9B9",
-			location: "Islamic Hub, Braddell Rd",
-			locationDetails: "bawah block",
-			expiryDate: DATETIME,
-			images: [],
-			dietary: ['halal'],
-			description: "not for the diabetic",
-			isFinishing: true,
-			createdAt: DATETIME,
-			updatedAt: DATETIME,
-			posterId: "",
-			deletedAt: DATETIME }
-
-		return postEntries;
+		// return postEntries;
 	}
 	render() {
-		post = this.state.post;
-
+		posts = this.state.post;
+		if (!posts){
+			return <View></View>
+		}
 		return (
 			<Content>
 				<Text style={styles.yourPostHeading}>
 					Your Post
 				</Text>
-				<SinglePost post={post}/>
+				{
+					posts.map((post)=>{
+						return <SinglePost key={post.postId} post={post}/>
+					})
+				}
 			</Content>
 		)
 	}

@@ -8,15 +8,18 @@ import { Container,
 			   Card, CardItem, Body,
 			   Thumbnail } from 'native-base';
 
+import moment from 'moment';
+
 import { Actions } from 'react-native-router-flux';
 import Swiper from 'react-native-swiper';
 
 import MyPost from './MyPost';
 import PostList from './PostList';
 
-export default class ViewPost extends Component {
+export default class ViewDetails extends Component {
 	render() {
-
+		console.log(this.props.post)
+		const hrsAgo = moment(this.props.post.createdAt).fromNow();
 		return (
 
 				<Content padder style={{backgroundColor: 'white'}}>
@@ -37,13 +40,13 @@ export default class ViewPost extends Component {
 						<Card style={{flexWrap: 'nowrap'}}>
 							<CardItem header>
 								<Text style={{fontSize: 12, fontWeight: '500', color: '#89898990'}}>
-									Posted 10 minutes ago by Me
+									Posted { hrsAgo } by Me
 								</Text>
 							</CardItem>
 
 							<CardItem>
 								<Text style={{color: '#2b2929', fontWeight: '500'}}>
-									We have loads of nasi lemak left over! Come quick. In general, short description of food goes here
+									{this.props.post.description}
 								</Text>
 							</CardItem>
 
@@ -59,7 +62,7 @@ export default class ViewPost extends Component {
 							<Icon name='md-pin' style={{fontSize: 13, marginTop: '1%', marginLeft: '1%'}}/>
 							<Body>
 								<Text style={{color: '#636161', fontSize: 14, textAlign: 'left'}}>
-									Block 358 Woodlands Ave 5 #03-374 Singapore 730358
+									{this.props.post.location.locationDetails}
 								</Text>
 							</Body>
 						</View>

@@ -14,7 +14,7 @@ import { Actions } from 'react-native-router-flux';
 export default class Header extends Component {
 
   render() {
-    console.log(PixelRatio.get())
+    // console.log(PixelRatio.get())
     let headTitle = (this.props.header) ? (<Text style={{fontSize: 18}}>{this.props.header}</Text>) : (<Image source={require('../../icon/logo.png')} style={styles.img} resizeMode='contain'/>);
 
     let leftIcon = (this.props.header) ? (<Icon button onPress={Actions.pop} name='ios-arrow-back-outline' style={{color: 'black'}}/>) : (<Icon name='menu' style={{color: 'black'}}/>);

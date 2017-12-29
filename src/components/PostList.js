@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Content, Text } from 'native-base';
+import { Content, Text, View } from 'native-base';
+import axios from 'axios';
 
 import SinglePost from './SinglePost';
 
@@ -15,54 +16,17 @@ export default class PostList extends Component {
 
 	getAllPosts(user=null){
 
-		let DATETIME = new Date();
+		const postEntries = axios.get('http://174.138.26.61:8080/api/v1/post').then(response => this.setState({post: response.data}))
 
-		// Dummy Data ( will make API call )
-		let postEntries = [
-			{ _id: "YpsE746PQQh5gG9B9",
-				location: "Woodlands Ave 9",
-				locationDetails: "bawah block",
-				expiryDate: DATETIME,
-				images: [],
-				dietary: ['halal'],
-				description: "not for the diabetic",
-				isFinishing: true,
-				createdAt: DATETIME,
-				updatedAt: DATETIME,
-				posterId: "",
-				deletedAt: DATETIME },
-			{ _id: "YpsE746PQQh5aG9B9",
-				location: "Hive @ NTU",
-				locationDetails: "bawah block",
-				expiryDate: DATETIME,
-				images: [],
-				dietary: ['halal'],
-				description: "not for the diabetic",
-				isFinishing: true,
-				createdAt: DATETIME,
-				updatedAt: DATETIME,
-				posterId: "",
-				deletedAt: DATETIME },
-			{ _id: "YpsE746PQQh5dG9B9",
-				location: "Grand Hyatt Hotel",
-				locationDetails: "bawah block",
-				expiryDate: DATETIME,
-				images: [],
-				dietary: ['halal'],
-				description: "not for the diabetic",
-				isFinishing: true,
-				createdAt: DATETIME,
-				updatedAt: DATETIME,
-				posterId: "",
-				deletedAt: DATETIME },
-		]
-
-		return postEntries;
+		// return postEntries;
 	}
-	
-	render() {
 
+	render() {
 		posts = this.state.post;
+		// console.log(`All post: ${posts}`);
+		if (!posts){
+			return <View></View>
+		}
 		const { postListHeading } = styles;
 
 		return (
@@ -72,7 +36,7 @@ export default class PostList extends Component {
 				</Text>
 				{
 					posts.map((post)=>{
-						return <SinglePost key={post._id} post={post}/>
+						return <SinglePost key={post.postId} post={post}/>
 					})
 				}
 			</Content>
