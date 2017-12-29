@@ -22,11 +22,11 @@ const RouterComponent = () => {
 	      <Stack key="root">
 	        <Scene key="login" component={Login} title="login" />
 	      	<Scene key="browsePost" component={BrowsePost}
-						navBar={() => <Header />} />
+						navBar={() => <Header />} initial />
 		      <Scene key="viewPost" component={ViewDetails}
 						navBar={() => <Header header={'Details'} />} />
 	      	<Scene key="createPost" component={CreatePost}
-						navBar={() => <Header header={'Create Post'}  />} initial />
+						navBar={() => <Header header={'Create Post'}  />} />
 	      	<Scene key="editPost" component={EditPost}
 						navBar={() => <Header header={'Edit Post'} />} />
 
