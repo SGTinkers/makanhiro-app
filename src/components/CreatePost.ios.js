@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { PixelRatio, DatePickerIOS } from 'react-native';
+
 import { Form,
 				 Container,
 				 Content,
@@ -16,25 +17,40 @@ import { Form,
 				 View, Picker, Icon } from 'native-base';
 
 import { ImagePicker } from 'expo';
-
+import CheckBox from 'react-native-checkbox';
 import moment from 'moment';
+import axios from 'axios';
 
+const AUTH_TOKEN = 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJBdXRoZW50aWNhdGlvbiIsImlzcyI6Ik1zb2NpZXR5IiwiaWQiOiJkYTQ0OGJmMWQ2YzJjNThkMWNmMDhlZGIzOWI0ZmEyOGI3MWRkZDhlYzRkNWY2NTkyODdhOGRiMWZmOTU1OTRkIiwiZW1haWwiOiJnaG9zdG9wczFAaG90bWFpbC5zZyJ9.scztzqjm3z9fAyTQwc1_JBGjZMsk8aQRKzF61Cgy0xA';
 const Item = Picker.Item;
+axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
+axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
 class CreatePost extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			selected5: "ABUNDANT",
+			foodAvailability: '',
 			image: [],
 			date: new Date(),
 			showDatePicker: false,
-			dietary: ['HALAL', 'Vegan'],
+			dietaryRestriction: [],
+			locationSelected: undefined,
+			checkDiet: {
+				halal: false,
+				veg: false,
+			},
+			description: '',
 		};
 	}
 	onValueChange5(value: string) {
 		this.setState({
-			selected5: value
+			foodAvailability: value
+		});
+	}
+	onValueChange6(value: number) {
+		this.setState({
+			locationSelected: value
 		});
 	}
 	_pickImage = async () => {
@@ -51,10 +67,48 @@ class CreatePost extends Component {
 			this.setState({ image: currImg });
 		}
 	};
+	handleDietaryToggle() {
+		//get text Content
+		//check if inside state (array)
 
+		//if not inside,
+		//push to array,
+
+		//if inside,
+		//remove frm array
+
+	}
+	renderDietaryToggle() {
+		//if state.dietaryRestriction contains a 'halal'
+		//should look 'without the tick, less color'
+
+		//if state.dietaryRestriction contains a 'vegan'
+		//should look 'without the tick, less color'
+	}
+	post() {
+		const { locationSelected, image, dietaryRestriction, foodAvailability, description } = this.state;
+		const params = {
+			locationId: locationSelected,
+			expiryTime: moment(this.state.date).format('DD-MM-YYYY hh:mm:ss'),
+			images: image,
+			dietary: dietaryRestriction[0],
+			description,
+			foodAvailability,
+		}
+		axios.post('http://174.138.26.61:8080/api/v1/post', params)
+		.then(function (response) {
+			console.log(response);
+		})
+		.catch(function (error) {
+			console.log(error);
+		});
+	}
 	render() {
 		let { image } = this.state;
-		// const posterId = 'da448bf1d6c2c58d1cf08edb39b4fa28b71ddd8ec4d5f659287a8db1ff95594d';
+		let { dietaryRestriction } = this.state;
+		console.log(this.state.description);
+		// const { dietaryRestriction } = this.state;
+
 		let showDatePicker = this.state.showDatePicker ?
 			<DatePickerIOS
 				style={{ height: 200, zIndex: 2 }}
@@ -82,21 +136,39 @@ class CreatePost extends Component {
 
 								{/* description */}
 								<Piece rounded style={{padding: 5, marginBottom: 23}}>
-									<Input floatingLabel multiline={true} numberOfLines={3} placeholder='Short description of food' style={{height: 100, fontSize: 13}}/>
+									<Input onChangeText={ (description) => {this.setState({ description })} } onfloatingLabel multiline={true} numberOfLines={3} placeholder='Short description of food' style={{height: 100, fontSize: 13}}/>
 								</Piece>
 
-								{/* location */}
-								<Piece rounded style={{padding: 5, marginBottom: 23}}>
-									<Input placeholder='Location' style={{fontSize: 11, height: 25}}/>
-								</Piece>
-
-								{/* food availability */}
+								<Text>Select Location: </Text>
 								<Picker textStyle={{fontSize: 11}} style={{alignSelf: 'stretch', marginBottom: 20, borderRadius: 20, borderWidth: 0.5, borderColor: '#d6d7da'}}
 									mode="dropdown"
+									placeholder="Select Location"
 									headerStyle={{ backgroundColor: "#b95dd3" }}
 									headerBackButtonTextStyle={{ color: "#fff" }}
 									headerTitleStyle={{ color: "#fff" }}
-									selectedValue={this.state.selected5}
+									selectedValue={this.state.locationSelected}
+									onValueChange={this.onValueChange6.bind(this)}
+									>
+
+									<Item label="National University of Singapore" value={0} />
+									<Item label="Nanyang Technological University" value={1} />
+									<Item label="Singapore Management University" value={2} />
+									<Item label="Temasek Polytechnic" value={7} />
+									<Item label="Singapore Polytechnic" value={3} />
+									<Item label="Republic Polytechnic" value={4} />
+									<Item label="Ngee Ann Polytechnic" value={6} />
+									<Item label="Nanyang Polytechnic" value={5} />
+								</Picker>
+
+								{/* food availability */}
+								<Text>Food Availability: </Text>
+								<Picker textStyle={{fontSize: 11}} style={{alignSelf: 'stretch', marginBottom: 20, borderRadius: 20, borderWidth: 0.5, borderColor: '#d6d7da'}}
+									mode="dropdown"
+									placeholder="Select Food Availability"
+									headerStyle={{ backgroundColor: "#b95dd3" }}
+									headerBackButtonTextStyle={{ color: "#fff" }}
+									headerTitleStyle={{ color: "#fff" }}
+									selectedValue={this.state.foodAvailability}
 		              onValueChange={this.onValueChange5.bind(this)}
 									>
 
@@ -120,22 +192,67 @@ class CreatePost extends Component {
 						</View>
 
 						{/* Dietary Restriction */}
-						<View padder style={{flexDirection: 'row', marginBottom: (PixelRatio.get() === 2) ? 50 : 150}}>
-              <Button iconLeft small transparent>
+						<View padder style={{marginBottom: (PixelRatio.get() === 2) ? 50 : 150}}>
+              {/* <Button onPress={ () => console.log('add restriction') } iconLeft small transparent>
                 <Icon name='md-add-circle' style={{color: '#4de2c2', fontSize: 30}}/>
 							</Button>
-								{ this.state.dietary.length < 1 ?
-									(<Text style={{color: '#4de2c2', fontWeight: '600', alignSelf: 'flex-start'}}>Add Dietary Restriction</Text>) : (<View />)}
+							<Button onPress={this.handleDietaryToggle.bind(this)} small transparent>
+								<Badge style={{ backgroundColor: '#4de2c2', marginLeft: 5, height: '129%', alignSelf: 'center'}}>
+									<Text style={{ color: 'white', fontSize: 10, fontWeight: '600' }}>Halal</Text>
+								</Badge>
+							</Button>
+							<Button onPress={this.handleDietaryToggle.bind(this)} small transparent>
+								<Badge style={{ backgroundColor: '#4de2c2', marginLeft: 5, height: '129%', alignSelf: 'center'}}>
+									<Text style={{ color: 'white', fontSize: 10, fontWeight: '600' }}>Vegetarian</Text>
+								</Badge>
+							</Button> */}
 
-								{ this.state.dietary.map( diet => <Badge style={{ backgroundColor: '#4de2c2', marginLeft: 5, height: '76%', alignSelf: 'center'}}>
-								                  <Text style={{ color: 'white', fontSize: 10, alignSelf: 'center' }}>{ diet }</Text>
-								                </Badge> ) }
+							<CheckBox
+							  label='Halal'
+							  checked={this.state.checkDiet.halal}
+							  onChange={(checked) => {
+										// toggle state
+										this.setState({  checkDiet: {
+											halal: !this.state.checkDiet.halal,
+											veg: this.state.checkDiet.veg,
+										} });
+										if (! dietaryRestriction.includes('HALAL')){
+											dietaryRestriction.push('HALAL');
+											this.setState({ dietaryRestriction })
+										} else {
+											const index = dietaryRestriction.indexOf('HALAL');
+											dietaryRestriction.splice(index, 1);
+											this.setState({ dietaryRestriction })
+										}
+										console.log('I am checked', this.state.dietaryRestriction)
+									}}
+							/>
+							<CheckBox
+							  label='Vegetarian'
+							  checked={this.state.checkDiet.veg}
+							  onChange={(checked) => {
+									// toggle state
+									this.setState({  checkDiet: {
+										halal: this.state.checkDiet.halal,
+										veg: !this.state.checkDiet.veg,
+									} });
+									if (! dietaryRestriction.includes('VEGETARIAN')){
+										dietaryRestriction.push('VEGETARIAN');
+										this.setState({ dietaryRestriction })
+									} else {
+										const index = dietaryRestriction.indexOf('VEGETARIAN');
+										dietaryRestriction.splice(index, 1);
+										this.setState({ dietaryRestriction })
+									}
+									console.log('I am checked', this.state.dietaryRestriction)
+									}}
+							/>
             </View>
 
 						{/* Submit Button */}
 						<View style={{flex: 1, flexDirection: 'row', justifyContent: 'center'}}>
 							<Left />
-							<Button iconRight rounded style={{backgroundColor: '#c517d8', flex: 2}}>
+							<Button onPress={ () => this.post() } iconRight rounded style={{backgroundColor: '#c517d8', flex: 2}}>
 								<Text>Post</Text>
 								<Icon name='checkmark' />
 							</Button>
