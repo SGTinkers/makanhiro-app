@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { PixelRatio, DatePickerIOS } from 'react-native';
+import { PixelRatio, DatePickerIOS, Keyboard } from 'react-native';
 
 import { Form,
 				 Container,
@@ -95,30 +95,30 @@ class CreatePost extends Component {
 			description,
 			foodAvailability,
 		}
-		axios.post('http://174.138.26.61:8080/api/v1/post', params)
+		// console.log(params);
+		axios.post('https://174.138.26.61:8080/api/v1/post', params)
 		.then(function (response) {
+			console.log('lalala');
 			console.log(response);
 		})
 		.catch(function (error) {
-			console.log(error);
+			// console.error(error.response.data);
+			console.error(error);
 		});
 	}
 	render() {
 		let { image } = this.state;
 		let { dietaryRestriction } = this.state;
-		console.log(this.state.description);
-		// const { dietaryRestriction } = this.state;
-
 		let showDatePicker = this.state.showDatePicker ?
 			<DatePickerIOS
-				style={{ height: 200, zIndex: 2 }}
+				style={{ height: 200 }}
 				date={this.state.date} onDateChange={ (date) => this.setState({date}) }
 				mode="datetime" /> : <View />;
 		return (
 	      <Container>
 	        <Content padder style={{backgroundColor: '#f7f7f7'}}>
 						{/* upload images */}
-						<View style={{flexDirection: 'row', marginTop: 20, marginLeft: 10}}>
+						<View style={{flexDirection: 'row', marginTop: 20, marginBottom: 13, marginLeft: 10}}>
 							{ image.length < 3 ? (<Button large transparent style={{marginRight: 10}} onPress={this._pickImage} >
 																	<Thumbnail large square source={require('../../icon/add-photo.png')} style={{borderRadius: 12}}/>
 																</Button>) : <View></View>}
@@ -129,9 +129,13 @@ class CreatePost extends Component {
 																</Button> )
 							}
 						</View>
+						<View style={{flexDirection: 'row', marginLeft: 10}} >
+							<Icon style={{fontSize: 15, marginRight: 3}} name='information-circle' />
+							<Text style={{alignSelf: 'flex-start', fontStyle: 'italic', fontSize: 10 }}>maximum of 3 photos.</Text>
+						</View>
 
 						{/* form input */}
-						<View style={{marginTop: 30}}>
+						<View style={{marginTop: 10}}>
 							<Form style={{padding: 10}}>
 
 								{/* description */}
@@ -139,7 +143,6 @@ class CreatePost extends Component {
 									<Input onChangeText={ (description) => {this.setState({ description })} } onfloatingLabel multiline={true} numberOfLines={3} placeholder='Short description of food' style={{height: 100, fontSize: 13}}/>
 								</Piece>
 
-								<Text>Select Location: </Text>
 								<Picker textStyle={{fontSize: 11}} style={{alignSelf: 'stretch', marginBottom: 20, borderRadius: 20, borderWidth: 0.5, borderColor: '#d6d7da'}}
 									mode="dropdown"
 									placeholder="Select Location"
@@ -161,7 +164,6 @@ class CreatePost extends Component {
 								</Picker>
 
 								{/* food availability */}
-								<Text>Food Availability: </Text>
 								<Picker textStyle={{fontSize: 11}} style={{alignSelf: 'stretch', marginBottom: 20, borderRadius: 20, borderWidth: 0.5, borderColor: '#d6d7da'}}
 									mode="dropdown"
 									placeholder="Select Food Availability"
@@ -178,14 +180,34 @@ class CreatePost extends Component {
 								</Picker>
 
 								{/* expiryTime */}
-								<Piece>
-									<Icon style={{fontSize: 16}} active name='ios-calendar-outline' />
-									<Input
-										value={moment(this.state.date).format('DD-MMM-YYYY hh:mm A')}
-										onFocus={ () => this.setState({showDatePicker: !this.state.showDatePicker}) }
-										style={{fontSize: 13}}
-										placeholder='expiry date'/>
-								</Piece>
+								<View style={{ flexDirection: 'row' }} >
+									<Icon style={{ alignSelf: 'flex-start', fontSize: 27, marginRight: 6 }} active name='ios-calendar-outline' />
+									{/*									<Input
+																			value={moment(this.state.date).format('DD-MMM-YYYY hh:mm A')}
+																			onFocus={ () => {
+																				Keyboard.dismiss;
+																				this.setState({showDatePicker: !this.state.showDatePicker})
+																			} }
+																			style={{fontSize: 13}}
+																			placeholder='expiry date'/>  */}
+									<View style={{ flexDirection: 'column', flex: 1 }}>
+										<Button
+											onPress={ () => this.setState({ showDatePicker: !this.state.showDatePicker }) }
+										 	style={{ height: 30 }}
+											block
+											bordered
+											danger>
+					            <Text>{ this.state.showDatePicker ? 'Set!': 'Set Expiry Date' }</Text>
+					          </Button>
+										<Text
+											style={{ fontStyle: 'italic', fontSize: 10 }}>
+											expired at: <Text style={{color: 'red', fontStyle: 'italic', fontSize: 12}}>
+											{moment(this.state.date).format('DD-MMM-YYYY hh:mm A')}
+											</Text>
+										</Text>
+									</View>
+								</View>
+
 								{showDatePicker}
 
 							</Form>
