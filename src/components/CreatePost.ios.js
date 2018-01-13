@@ -21,10 +21,14 @@ import CheckBox from 'react-native-checkbox';
 import moment from 'moment';
 import axios from 'axios';
 
-const AUTH_TOKEN = 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJBdXRoZW50aWNhdGlvbiIsImlzcyI6Ik1zb2NpZXR5IiwiaWQiOiJkYTQ0OGJmMWQ2YzJjNThkMWNmMDhlZGIzOWI0ZmEyOGI3MWRkZDhlYzRkNWY2NTkyODdhOGRiMWZmOTU1OTRkIiwiZW1haWwiOiJnaG9zdG9wczFAaG90bWFpbC5zZyJ9.scztzqjm3z9fAyTQwc1_JBGjZMsk8aQRKzF61Cgy0xA';
 const Item = Picker.Item;
-axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
-axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+const { post, common } = axios.defaults.headers;
+
+// axios config
+const AUTH_TOKEN = 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJBdXRoZW50aWNhdGlvbiIsImlzcyI6Ik1zb2NpZXR5IiwiaWQiOiJkYTQ0OGJmMWQ2YzJjNThkMWNmMDhlZGIzOWI0ZmEyOGI3MWRkZDhlYzRkNWY2NTkyODdhOGRiMWZmOTU1OTRkIiwiZW1haWwiOiJnaG9zdG9wczFAaG90bWFpbC5zZyJ9.scztzqjm3z9fAyTQwc1_JBGjZMsk8aQRKzF61Cgy0xA';
+post['Content-Type'] = 'multipart/form-data';
+common['Authorization'] = AUTH_TOKEN;
 
 class CreatePost extends Component {
 	constructor(props) {
@@ -96,14 +100,14 @@ class CreatePost extends Component {
 			foodAvailability,
 		}
 		// console.log(params);
-		axios.post('https://174.138.26.61:8080/api/v1/post', params)
+		axios.post('http://174.138.26.61:8080/api/v1/post', params)
 		.then(function (response) {
 			console.log('lalala');
 			console.log(response);
 		})
 		.catch(function (error) {
-			// console.error(error.response.data);
-			console.error(error);
+			console.error(error.response.data);
+			// console.error(error);
 		});
 	}
 	render() {
