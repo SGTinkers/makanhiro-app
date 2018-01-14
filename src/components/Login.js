@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { AsyncStorage } from 'react-native';
 import { SocialIcon } from 'react-native-elements';
 import { Facebook } from 'expo';
-import axios from 'axios';
+// import axios from 'axios';
 import { Actions } from 'react-native-router-flux';
 
 export default class Login extends Component {
@@ -27,27 +27,34 @@ export default class Login extends Component {
   }
 
   async logIn(id) {
+    console.log(`this.state.fbToken ${id}`);
     if ( id !== '' ) {
-      const params = { fbToken: id };
-      axios.get(`http://174.138.26.61:8080/api/v1/login?fbToken=${id}`)
-           .then(response => console.log(`response ${response}`))
+      console.log('Trying SUBSEQUENT loggin in...')
+      fetch(`http://174.138.26.61:8080/api/v1/auth/login?fbToken=${id}`)
+           .then(response => response.json())
+           .then(function(data) {
+              // Create and append the li's to the ul
+              console.log('heelo');
+
+            })
            .catch( err => console.error(err) );
 
       Actions.browsePost();
     } else {
-      const { type, token } = await Facebook.logInWithReadPermissionsAsync('1773746099600814', {
-        permissions: ['public_profile', 'email'],
+      console.log('Trying INITIAL logging in...')
+      const { type, token } = await Facebook.logInWithReadPermissionsAsync('1905777919676190', {
+        permissions: ['email'],
       });
 
       try {
-        // Get the user's name using Facebook's Graph API
+        // if no token, then generate one first!
         const response = await fetch(`https://graph.facebook.com/me?access_token=${token}`);
         console.log(response.json())
 
         await AsyncStorage.setItem('@MyFbToken:key', token);
-        const params = { fbToken: token };
-        axios.get('http://174.138.26.61:8080/api/v1/login', params)
-             .then(response => console.log(`response ${response}`))
+        // THEN use the token
+        fetch(`http://174.138.26.61:8080/api/v1/auth/login?fbToken=${token}`)
+             .then(response => console.log(`this is here! ${response}`))
              .catch( err => console.error(err) );;
 
         Actions.browsePost();
