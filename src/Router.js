@@ -20,13 +20,13 @@ const RouterComponent = () => {
 	return (
 	  <Router>
 	      <Stack key="root">
-	        <Scene key="login" component={Login} title="login" initial />
+	        <Scene key="login" component={Login} title="login" />
 	      	<Scene key="browsePost" component={BrowsePost}
 						navBar={() => <Header />} />
 		      <Scene key="viewPost" component={ViewDetails}
 						navBar={() => <Header header={'Details'} />} />
 	      	<Scene key="createPost" component={CreatePost}
-						navBar={() => <Header header={'Create Post'} />} />
+						navBar={() => <Header header={'Create Post'} />} initial />
 	      	<Scene key="editPost" component={EditPost}
 						navBar={() => <Header header={'Edit Post'} />} />
 

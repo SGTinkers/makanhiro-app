@@ -19,16 +19,11 @@ import { Form,
 import { ImagePicker } from 'expo';
 import CheckBox from 'react-native-checkbox';
 import moment from 'moment';
-import axios from 'axios';
 
 const Item = Picker.Item;
 
-const { post, common } = axios.defaults.headers;
-
 // axios config
 const AUTH_TOKEN = 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJBdXRoZW50aWNhdGlvbiIsImlzcyI6Ik1zb2NpZXR5IiwiaWQiOiJkYTQ0OGJmMWQ2YzJjNThkMWNmMDhlZGIzOWI0ZmEyOGI3MWRkZDhlYzRkNWY2NTkyODdhOGRiMWZmOTU1OTRkIiwiZW1haWwiOiJnaG9zdG9wczFAaG90bWFpbC5zZyJ9.scztzqjm3z9fAyTQwc1_JBGjZMsk8aQRKzF61Cgy0xA';
-post['Content-Type'] = 'multipart/form-data';
-common['Authorization'] = AUTH_TOKEN;
 
 class CreatePost extends Component {
 	constructor(props) {
@@ -36,6 +31,7 @@ class CreatePost extends Component {
 		this.state = {
 			foodAvailability: '',
 			image: [],
+			imageObj: [],
 			date: new Date(),
 			showDatePicker: false,
 			dietaryRestriction: [],
@@ -63,52 +59,65 @@ class CreatePost extends Component {
 			aspect: [4, 3],
 		});
 
-		console.log(result);
+		// console.log(result);
 
 		if (!result.cancelled) {
 			let currImg = this.state.image;
-			currImg.push(result.uri)
-			this.setState({ image: currImg });
+			currImg.push(result.uri);
+			let imgObjArray = this.state.imageObj;
+			imgObjArray.push(result);
+			this.setState({ image: currImg, imageObj: imgObjArray });
 		}
 	};
-	handleDietaryToggle() {
-		//get text Content
-		//check if inside state (array)
 
-		//if not inside,
-		//push to array,
+	getJustImgName(img) {
+		// console.log(`HI im img: ${img}`);
+		const fullUri = img.split('/');
+		const justUri = fullUri[fullUri.length - 1];
 
-		//if inside,
-		//remove frm array
-
-	}
-	renderDietaryToggle() {
-		//if state.dietaryRestriction contains a 'halal'
-		//should look 'without the tick, less color'
-
-		//if state.dietaryRestriction contains a 'vegan'
-		//should look 'without the tick, less color'
+		return justUri;
 	}
 	post() {
-		const { locationSelected, image, dietaryRestriction, foodAvailability, description } = this.state;
+
+		let formData = new FormData();
+
+		// config headers
+		const headers = { 'Content-Type': 'multipart/form-data',
+										 	'Authorization': AUTH_TOKEN,
+											};
+		const { locationSelected,
+						image,
+						dietaryRestriction,
+						foodAvailability,
+						description,
+						imageObj } = this.state;
+
+		// console.log('IMAGEOBJ', imageObj);
+		// dd-MM-yyyy hh:mm:ss
 		const params = {
 			locationId: locationSelected,
-			expiryTime: moment(this.state.date).format('DD-MM-YYYY hh:mm:ss'),
-			images: image,
+			expiryTime: moment(this.state.date).format('dd-MM-yyyy hh:mm:ss'),
+			images: image.map( img => this.getJustImgName(img) ),
 			dietary: dietaryRestriction[0],
 			description,
 			foodAvailability,
 		}
-		// console.log(params);
-		axios.post('http://174.138.26.61:8080/api/v1/post', params)
-		.then(function (response) {
-			console.log('lalala');
-			console.log(response);
+		console.log(params);
+		formData.append('data', JSON.stringify(params));
+		imageObj.map( (eachImg, index) => formData.append(`img${index}`, {
+			uri: eachImg.uri,
+			type: 'image/jpeg',
+			name: this.getJustImgName(image[index]),
+		}) );
+		// console.log('FORMDATA', formData);
+		// https://posttestserver.com/post.php?dir=hello2
+		fetch('https://posttestserver.com/post.php?dir=hello9', {
+			method: 'POST',
+			headers,
+			body: formData
 		})
-		.catch(function (error) {
-			console.error(error.response.data);
-			// console.error(error);
-		});
+		.then( res => console.log(res) )
+		.catch( err => console.error(err) )
 	}
 	render() {
 		let { image } = this.state;
@@ -186,14 +195,6 @@ class CreatePost extends Component {
 								{/* expiryTime */}
 								<View style={{ flexDirection: 'row' }} >
 									<Icon style={{ alignSelf: 'flex-start', fontSize: 27, marginRight: 6 }} active name='ios-calendar-outline' />
-									{/*									<Input
-																			value={moment(this.state.date).format('DD-MMM-YYYY hh:mm A')}
-																			onFocus={ () => {
-																				Keyboard.dismiss;
-																				this.setState({showDatePicker: !this.state.showDatePicker})
-																			} }
-																			style={{fontSize: 13}}
-																			placeholder='expiry date'/>  */}
 									<View style={{ flexDirection: 'column', flex: 1 }}>
 										<Button
 											onPress={ () => this.setState({ showDatePicker: !this.state.showDatePicker }) }
@@ -219,20 +220,6 @@ class CreatePost extends Component {
 
 						{/* Dietary Restriction */}
 						<View padder style={{marginBottom: (PixelRatio.get() === 2) ? 50 : 150}}>
-              {/* <Button onPress={ () => console.log('add restriction') } iconLeft small transparent>
-                <Icon name='md-add-circle' style={{color: '#4de2c2', fontSize: 30}}/>
-							</Button>
-							<Button onPress={this.handleDietaryToggle.bind(this)} small transparent>
-								<Badge style={{ backgroundColor: '#4de2c2', marginLeft: 5, height: '129%', alignSelf: 'center'}}>
-									<Text style={{ color: 'white', fontSize: 10, fontWeight: '600' }}>Halal</Text>
-								</Badge>
-							</Button>
-							<Button onPress={this.handleDietaryToggle.bind(this)} small transparent>
-								<Badge style={{ backgroundColor: '#4de2c2', marginLeft: 5, height: '129%', alignSelf: 'center'}}>
-									<Text style={{ color: 'white', fontSize: 10, fontWeight: '600' }}>Vegetarian</Text>
-								</Badge>
-							</Button> */}
-
 							<CheckBox
 							  label='Halal'
 							  checked={this.state.checkDiet.halal}
@@ -250,7 +237,7 @@ class CreatePost extends Component {
 											dietaryRestriction.splice(index, 1);
 											this.setState({ dietaryRestriction })
 										}
-										console.log('I am checked', this.state.dietaryRestriction)
+										// console.log('I am checked', this.state.dietaryRestriction)
 									}}
 							/>
 							<CheckBox
@@ -270,7 +257,7 @@ class CreatePost extends Component {
 										dietaryRestriction.splice(index, 1);
 										this.setState({ dietaryRestriction })
 									}
-									console.log('I am checked', this.state.dietaryRestriction)
+									// console.log('I am checked', this.state.dietaryRestriction)
 									}}
 							/>
             </View>
