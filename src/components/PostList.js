@@ -6,6 +6,7 @@ import SinglePost from './SinglePost';
 
 // import style
 import styles from '../styles/MainStyles';
+import { API, POST_PATH } from '../util/constants';
 
 export default class PostList extends Component {
 	async componentWillMount() {
@@ -16,9 +17,11 @@ export default class PostList extends Component {
 
 	getAllPosts(user=null){
 
-		const postEntries = axios.get('http://174.138.26.61:8080/api/v1/post').then(response => this.setState({post: response.data}))
+		const postEntries = axios.get(API+POST_PATH).then(response => {
+			// console.log(`hello ${response}`)
+			this.setState({post: response.data})
+		})
 
-		// return postEntries;
 	}
 
 	render() {

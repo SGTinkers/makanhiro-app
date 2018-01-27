@@ -4,22 +4,31 @@ import { SocialIcon } from 'react-native-elements';
 import { Facebook } from 'expo';
 // import axios from 'axios';
 import { Actions } from 'react-native-router-flux';
+import { API, AUTH_PATH } from '../util/constants';
 
 export default class Login extends Component {
 
   constructor(props){
     super(props);
-    this.state = { MyFbToken: '' };
+    this.state = { MyFbToken: '', ServerToken: '' };
   }
 
   async componentWillMount() {
     try {
-      const value = await AsyncStorage.getItem('@MyFbToken:key');
-      if (value !== null){
+      const fbToken = await AsyncStorage.getItem('@MyFbToken:key');
+      if (fbToken !== null){
         this.setState({
           MyFbToken: value
         })
-        console.log(`line 25: ${this.state.MyFbToken}`);
+        console.log(`MyFbToken: ${this.state.MyFbToken}`);
+      }
+
+      const serverToken = await AsyncStorage.getItem('@MyFbToken:serverToken');
+      if (serverToken !== null){
+        this.setState({
+          ServerToken: serverToken
+        })
+        console.log(`ServerToken: ${this.state.ServerToken}`);
       }
     } catch (error) {
       console.error(error.response.data);
@@ -30,13 +39,8 @@ export default class Login extends Component {
     console.log(`this.state.fbToken ${id}`);
     if ( id !== '' ) {
       console.log('Trying SUBSEQUENT loggin in...')
-      fetch(`http://174.138.26.61:8080/api/v1/auth/login?fbToken=${id}`)
-           .then(response => response.json())
-           .then(function(data) {
-              // Create and append the li's to the ul
-              console.log('heelo');
-
-            })
+      fetch(`${API+AUTH_PATH}?fbToken=${id}`)
+           .then(response => this.setState( { ServerToken: response._bodyInit.token } ) )
            .catch( err => console.error(err) );
 
       Actions.browsePost();
@@ -47,16 +51,15 @@ export default class Login extends Component {
       });
 
       try {
-        // if no token, then generate one first!
-        const response = await fetch(`https://graph.facebook.com/me?access_token=${token}`);
-        console.log(response.json())
-
         await AsyncStorage.setItem('@MyFbToken:key', token);
-        // THEN use the token
-        fetch(`http://174.138.26.61:8080/api/v1/auth/login?fbToken=${token}`)
-             .then(response => console.log(`this is here! ${response}`))
-             .catch( err => console.error(err) );;
 
+        // THEN use the token
+        fetch(`${API+AUTH_PATH}?fbToken=${token}`)
+             .then(response => this.setState( { ServerToken: response._bodyInit.token } ) )
+             .catch( err => console.error(err) );
+
+        await AsyncStorage.setItem('@MyFbToken:serverToken', this.state.ServerToken );
+        // console.log(`JWTTOKEN ${this.state.ServerToken}`);
         Actions.browsePost();
       } catch(error) {
         console.error(error);

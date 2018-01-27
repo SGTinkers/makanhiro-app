@@ -6,6 +6,7 @@ import SinglePost from './SinglePost';
 
 // import style
 import styles from '../styles/MainStyles';
+import { API, POST_PATH } from '../util/constants';
 
 export default class MyPost extends Component {
 	async componentWillMount() {
@@ -14,8 +15,9 @@ export default class MyPost extends Component {
 		})
 	}
 	getMyPostOnly(user=null){
-
-		const postEntries = axios.get('http://174.138.26.61:8080/api/v1/post').then(response => this.setState({post: response.data}))
+		// get userId first!
+		const userId = 'd1eaec93f44c28bdc955336987d82491d444d422d0eb55a0016930cdfe809115';
+		const postEntries = axios.get(`${API+POST_PATH}?userId=${userId}`).then(response => this.setState({post: response.data}))
 
 		// return postEntries;
 	}

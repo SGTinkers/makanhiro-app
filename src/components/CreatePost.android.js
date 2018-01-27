@@ -21,6 +21,8 @@ import CheckBox from 'react-native-checkbox';
 import moment from 'moment';
 import axios from 'axios';
 
+import { API, POST_PATH } from '../util/constants';
+
 const AUTH_TOKEN = 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJBdXRoZW50aWNhdGlvbiIsImlzcyI6Ik1zb2NpZXR5IiwiaWQiOiJkYTQ0OGJmMWQ2YzJjNThkMWNmMDhlZGIzOWI0ZmEyOGI3MWRkZDhlYzRkNWY2NTkyODdhOGRiMWZmOTU1OTRkIiwiZW1haWwiOiJnaG9zdG9wczFAaG90bWFpbC5zZyJ9.scztzqjm3z9fAyTQwc1_JBGjZMsk8aQRKzF61Cgy0xA';
 const Item = Picker.Item;
 axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
@@ -84,7 +86,7 @@ class CreatePost extends Component {
 			foodAvailability,
 		}
 		// console.log(params);
-		axios.post('https://174.138.26.61:8080/api/v1/post', params)
+		axios.post(API + POST_PATH, params)
 		.then(function (response) {
 			console.log('lalala');
 			console.log(response);

@@ -52,7 +52,7 @@ export default class ViewDetails extends Component {
 
 							<CardItem footer>
 								<Badge style={{ backgroundColor: '#4de2c2', height: 14, paddingBottom: 15}}>
-									<Text style={{ color: 'white', fontSize: 10, fontWeight: '600' }}>Contain Nuts</Text>
+									<Text style={{ color: 'white', fontSize: 10, fontWeight: '600' }}>{this.props.post.dietary}</Text>
 								</Badge>
 							</CardItem>
 						</Card>
@@ -62,6 +62,7 @@ export default class ViewDetails extends Component {
 							<Icon name='md-pin' style={{fontSize: 13, marginTop: '1%', marginLeft: '1%'}}/>
 							<Body>
 								<Text style={{color: '#636161', fontSize: 14, textAlign: 'left'}}>
+									{this.props.post.location.locationName}
 									{this.props.post.location.locationDetails}
 								</Text>
 							</Body>

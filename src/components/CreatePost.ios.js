@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { PixelRatio, DatePickerIOS, Keyboard } from 'react-native';
+import { PixelRatio, DatePickerIOS, Keyboard, AsyncStorage } from 'react-native';
 
 import { Form,
 				 Container,
@@ -21,9 +21,13 @@ import CheckBox from 'react-native-checkbox';
 import moment from 'moment';
 
 const Item = Picker.Item;
+import { API, POST_PATH } from '../util/constants';
 
 // axios config
-const AUTH_TOKEN = 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJBdXRoZW50aWNhdGlvbiIsImlzcyI6Ik1zb2NpZXR5IiwiaWQiOiJkYTQ0OGJmMWQ2YzJjNThkMWNmMDhlZGIzOWI0ZmEyOGI3MWRkZDhlYzRkNWY2NTkyODdhOGRiMWZmOTU1OTRkIiwiZW1haWwiOiJnaG9zdG9wczFAaG90bWFpbC5zZyJ9.scztzqjm3z9fAyTQwc1_JBGjZMsk8aQRKzF61Cgy0xA';
+// const AUTH_TOKEN = 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJBdXRoZW50aWNhdGlvbiIsImlzcyI6Ik1zb2NpZXR5IiwiaWQiOiJkYTQ0OGJmMWQ2YzJjNThkMWNmMDhlZGIzOWI0ZmEyOGI3MWRkZDhlYzRkNWY2NTkyODdhOGRiMWZmOTU1OTRkIiwiZW1haWwiOiJnaG9zdG9wczFAaG90bWFpbC5zZyJ9.scztzqjm3z9fAyTQwc1_JBGjZMsk8aQRKzF61Cgy0xA';
+
+const serverJWT = AsyncStorage.getItem('@MyFbToken:serverToken');
+const AUTH_TOKEN = `Bearer ${serverJWT}`;
 
 class CreatePost extends Component {
 	constructor(props) {
@@ -43,12 +47,12 @@ class CreatePost extends Component {
 			description: '',
 		};
 	}
-	onValueChange5(value: string) {
+	onFoodAvailabilityChange(value: string) {
 		this.setState({
 			foodAvailability: value
 		});
 	}
-	onValueChange6(value: number) {
+	onLocationSelectedChange(value: number) {
 		this.setState({
 			locationSelected: value
 		});
@@ -96,7 +100,7 @@ class CreatePost extends Component {
 		// dd-MM-yyyy hh:mm:ss
 		const params = {
 			locationId: locationSelected,
-			expiryTime: moment(this.state.date).format('dd-MM-yyyy hh:mm:ss'),
+			expiryTime: moment(this.state.date).format('DD-MM-yyyy hh:mm:ss'),
 			images: image.map( img => this.getJustImgName(img) ),
 			dietary: dietaryRestriction[0],
 			description,
@@ -109,9 +113,8 @@ class CreatePost extends Component {
 			type: 'image/jpeg',
 			name: this.getJustImgName(image[index]),
 		}) );
-		// console.log('FORMDATA', formData);
-		// https://posttestserver.com/post.php?dir=hello2
-		fetch('https://posttestserver.com/post.php?dir=hello9', {
+
+		fetch(API + POST_PATH, {
 			method: 'POST',
 			headers,
 			body: formData
@@ -163,7 +166,7 @@ class CreatePost extends Component {
 									headerBackButtonTextStyle={{ color: "#fff" }}
 									headerTitleStyle={{ color: "#fff" }}
 									selectedValue={this.state.locationSelected}
-									onValueChange={this.onValueChange6.bind(this)}
+									onValueChange={this.onLocationSelectedChange.bind(this)}
 									>
 
 									<Item label="National University of Singapore" value={0} />
@@ -184,7 +187,7 @@ class CreatePost extends Component {
 									headerBackButtonTextStyle={{ color: "#fff" }}
 									headerTitleStyle={{ color: "#fff" }}
 									selectedValue={this.state.foodAvailability}
-		              onValueChange={this.onValueChange5.bind(this)}
+		              onValueChange={this.onFoodAvailabilityChange.bind(this)}
 									>
 
 									<Item label="A lot!" value="ABUNDANT"/>

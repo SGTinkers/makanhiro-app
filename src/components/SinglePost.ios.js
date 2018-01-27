@@ -20,11 +20,21 @@ import styles from '../styles/MainStyles';
 
 export default class SinglePost extends Component {
 
+	getImg() {
+		const posterId = this.props.post.posterId;
+		const fileNameWExt = this.props.post.images[0];
+		const url = `http://localhost:8080/images/${posterId}/${fileNameWExt}`;
+
+		return url;
+	}
+
 
 	render() {
 		const editOrLike = 'create';
 		const post = this.props.post;
-		// console.log(post);
+		// console.log(`this is POST ${JSON.stringify(post)}`);
+		const img = post.images[0];
+
 
 		const { pin, location, time } = styles;
 		const hrsAgo = moment(this.props.post.createdAt).fromNow();
