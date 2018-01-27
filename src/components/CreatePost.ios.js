@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { PixelRatio, DatePickerIOS } from 'react-native';
-import { ImagePicker } from 'expo';
+import { ImagePicker, FormData } from 'expo';
 import CheckBox from 'react-native-checkbox';
 import moment from 'moment';
 import { Form, Container, Content,
@@ -9,6 +9,7 @@ import { Form, Container, Content,
   Left, View, Picker, Icon } from 'native-base';
 
 import { API, POST_PATH, AUTH_TOKEN } from '../util/constants';
+import { PostHelpers } from '../util/helpers';
 
 const { Item } = Picker;
 
@@ -32,43 +33,32 @@ class CreatePost extends Component {
   }
   onFoodAvailabilityChange(value: string) {
     this.setState({
-      foodAvailability: value
+      foodAvailability: value,
     });
   }
   onLocationSelectedChange(value: number) {
     this.setState({
-      locationSelected: value
+      locationSelected: value,
     });
   }
 
-  getJustImgName(img) {
-		// console.log(`HI im img: ${img}`);
-    const fullUri = img.split('/');
-    const justUri = fullUri[fullUri.length - 1];
-
-    return justUri;
-  }
-
   _pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
+    const result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
       aspect: [4, 3],
     });
 
-		// console.log(result);
-
     if (!result.cancelled) {
-      let currImg = this.state.image;
+      const currImg = this.state.image;
       currImg.push(result.uri);
-      let imgObjArray = this.state.imageObj;
+      const imgObjArray = this.state.imageObj;
       imgObjArray.push(result);
       this.setState({ image: currImg, imageObj: imgObjArray });
     }
   };
 
   post() {
-
-    let formData = new FormData();
+    const formData = new FormData();
 
   // config headers
 		const headers = { 'Content-Type': 'multipart/form-data',
@@ -86,7 +76,7 @@ class CreatePost extends Component {
     const params = {
       locationId: locationSelected,
       expiryTime: moment(this.state.date).format('DD-MM-yyyy hh:mm:ss'),
-      images: image.map( img => this.getJustImgName(img) ),
+      images: image.map( img => PostHelpers.getJustImgName(img) ),
       dietary: dietaryRestriction[0],
       description,
       foodAvailability,
@@ -96,7 +86,7 @@ class CreatePost extends Component {
     imageObj.map( (eachImg, index) => formData.append(`img${index}`, {
       uri: eachImg.uri,
       type: 'image/jpeg',
-      name: this.getJustImgName(image[index]),
+      name: PostHelpers.getJustImgName(image[index]),
     }) );
 
     fetch(API + POST_PATH, {
