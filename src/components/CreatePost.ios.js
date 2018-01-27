@@ -14,66 +14,68 @@ const { Item } = Picker;
 
 class CreatePost extends Component {
   constructor(props) {
-		super(props);
-		this.state = {
-			foodAvailability: '',
-			image: [],
-			imageObj: [],
-			date: new Date(),
-			showDatePicker: false,
-			dietaryRestriction: [],
-			locationSelected: undefined,
-			checkDiet: {
-				halal: false,
-				veg: false,
-			},
-			description: '',
-		};
-	}
-	onFoodAvailabilityChange(value: string) {
-		this.setState({
-			foodAvailability: value
-		});
-	}
-	onLocationSelectedChange(value: number) {
-		this.setState({
-			locationSelected: value
-		});
-	}
-	_pickImage = async () => {
-		let result = await ImagePicker.launchImageLibraryAsync({
-			allowsEditing: true,
-			aspect: [4, 3],
-		});
+    super(props);
+    this.state = {
+      foodAvailability: '',
+      image: [],
+      imageObj: [],
+      date: new Date(),
+      showDatePicker: false,
+      dietaryRestriction: [],
+      locationSelected: undefined,
+      checkDiet: {
+        halal: false,
+        veg: false,
+      },
+      description: '',
+    };
+  }
+  onFoodAvailabilityChange(value: string) {
+    this.setState({
+      foodAvailability: value
+    });
+  }
+  onLocationSelectedChange(value: number) {
+    this.setState({
+      locationSelected: value
+    });
+  }
+
+  getJustImgName(img) {
+		// console.log(`HI im img: ${img}`);
+    const fullUri = img.split('/');
+    const justUri = fullUri[fullUri.length - 1];
+
+    return justUri;
+  }
+
+  _pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      aspect: [4, 3],
+    });
 
 		// console.log(result);
 
-		if (!result.cancelled) {
-			let currImg = this.state.image;
-			currImg.push(result.uri);
-			let imgObjArray = this.state.imageObj;
-			imgObjArray.push(result);
-			this.setState({ image: currImg, imageObj: imgObjArray });
-		}
-	};
+    if (!result.cancelled) {
+      let currImg = this.state.image;
+      currImg.push(result.uri);
+      let imgObjArray = this.state.imageObj;
+      imgObjArray.push(result);
+      this.setState({ image: currImg, imageObj: imgObjArray });
+    }
+  };
 
-	getJustImgName(img) {
-		// console.log(`HI im img: ${img}`);
-		const fullUri = img.split('/');
-		const justUri = fullUri[fullUri.length - 1];
+  post() {
 
-		return justUri;
-	}
-	post() {
+    let formData = new FormData();
 
-		let formData = new FormData();
-
-		// config headers
+  // config headers
 		const headers = { 'Content-Type': 'multipart/form-data',
 										 	'Authorization': AUTH_TOKEN,
 											};
 		const { locationSelected,
-						image,
+            image,
 						dietaryRestriction,
 						foodAvailability,
 						description,
@@ -81,49 +83,50 @@ class CreatePost extends Component {
 
 		// console.log('IMAGEOBJ', imageObj);
 		// dd-MM-yyyy hh:mm:ss
-		const params = {
-			locationId: locationSelected,
-			expiryTime: moment(this.state.date).format('DD-MM-yyyy hh:mm:ss'),
-			images: image.map( img => this.getJustImgName(img) ),
-			dietary: dietaryRestriction[0],
-			description,
-			foodAvailability,
-		}
-		console.log(params);
-		formData.append('data', JSON.stringify(params));
-		imageObj.map( (eachImg, index) => formData.append(`img${index}`, {
-			uri: eachImg.uri,
-			type: 'image/jpeg',
-			name: this.getJustImgName(image[index]),
-		}) );
+    const params = {
+      locationId: locationSelected,
+      expiryTime: moment(this.state.date).format('DD-MM-yyyy hh:mm:ss'),
+      images: image.map( img => this.getJustImgName(img) ),
+      dietary: dietaryRestriction[0],
+      description,
+      foodAvailability,
+    }
+    console.log(params);
+    formData.append('data', JSON.stringify(params));
+    imageObj.map( (eachImg, index) => formData.append(`img${index}`, {
+      uri: eachImg.uri,
+      type: 'image/jpeg',
+      name: this.getJustImgName(image[index]),
+    }) );
 
-		fetch(API + POST_PATH, {
-			method: 'POST',
-			headers,
-			body: formData
-		})
-		.then( res => console.log(res) )
+    fetch(API + POST_PATH, {
+      method: 'POST',
+      headers,
+      body: formData
+    })
+    .then( res => console.log(res) )
 		.catch( err => console.error(err) )
-	}
-	render() {
-		let { image } = this.state;
-		let { dietaryRestriction } = this.state;
-		let showDatePicker = this.state.showDatePicker ?
-			<DatePickerIOS
-				style={{ height: 200 }}
+  }
+  render() {
+    let { image } = this.state;
+    let { dietaryRestriction } = this.state;
+    let showDatePicker = this.state.showDatePicker ?
+     <DatePickerIOS
+        style={{ height: 200 }}
 				date={this.state.date} onDateChange={ (date) => this.setState({date}) }
 				mode="datetime" /> : <View />;
 		return (
-	      <Container>
-	        <Content padder style={{backgroundColor: '#f7f7f7'}}>
-						{/* upload images */}
-						<View style={{flexDirection: 'row', marginTop: 20, marginBottom: 13, marginLeft: 10}}>
-							{ image.length < 3 ? (<Button large transparent style={{marginRight: 10}} onPress={this._pickImage} >
-																	<Thumbnail large square source={require('../../icon/add-photo.png')} style={{borderRadius: 12}}/>
-																</Button>) : <View></View>}
+     <Container>
+       <Content padder style={{backgroundColor: '#f7f7f7'}}>
+         {/* upload images */}
+         <View style={{flexDirection: 'row', marginTop: 20, marginBottom: 13, marginLeft: 10}}>
+           { image.length < 3 ? (<Button large transparent style={{marginRight: 10}}
+             onPress={this._pickImage} >
+             <Thumbnail large square source={require('../../icon/add-photo.png')} style={{borderRadius: 12}}/>
+	             </Button>) : <View></View>}
 
-							{
-								image.map( eachImageUri => <Button key={ eachImageUri } large transparent style={{marginRight: 10}}>
+           {
+              image.map( eachImageUri => <Button key={ eachImageUri } large transparent style={{marginRight: 10}}>
 																	<Thumbnail large square source={{ uri: eachImageUri }} style={{borderRadius: 12}}/>
 																</Button> )
 							}
