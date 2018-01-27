@@ -8,13 +8,9 @@ import { Form, Container, Content,
   Text, Thumbnail, Right,
   Left, View, Picker, Icon } from 'native-base';
 
-import { API, POST_PATH } from '../util/constants';
+import { API, POST_PATH, AUTH_TOKEN } from '../util/constants';
 
 const { Item } = Picker;
-
-// axios config
-// const AUTH_TOKEN = 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJBdXRoZW50aWNhdGlvbiIsImlzcyI6Ik1zb2NpZXR5IiwiaWQiOiJkYTQ0OGJmMWQ2YzJjNThkMWNmMDhlZGIzOWI0ZmEyOGI3MWRkZDhlYzRkNWY2NTkyODdhOGRiMWZmOTU1OTRkIiwiZW1haWwiOiJnaG9zdG9wczFAaG90bWFpbC5zZyJ9.scztzqjm3z9fAyTQwc1_JBGjZMsk8aQRKzF61Cgy0xA';
-
 
 class CreatePost extends Component {
   constructor(props) {

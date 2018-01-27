@@ -4,6 +4,7 @@ import { Container, Content, Button, Icon } from 'native-base';
 import { Actions } from 'react-native-router-flux';
 
 import styles from '../styles/MainStyles';
+
 import MyPost from './MyPost';
 import PostList from './PostList';
 
