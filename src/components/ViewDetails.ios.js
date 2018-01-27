@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, Text, Image, ScrollView } from 'react-native';
 import { Container,
-				 Content,
-				 Button,
-				 Badge,
-			   Left, Right, Icon,
-			   Card, CardItem, Body,
-			   Thumbnail } from 'native-base';
+  Content,
+  Button,
+  Badge,
+  Left, Right, Icon,
+  Card, CardItem, Body,
+  Thumbnail } from 'native-base';
 
 import moment from 'moment';
 
@@ -17,13 +17,13 @@ import MyPost from './MyPost';
 import PostList from './PostList';
 
 export default class ViewDetails extends Component {
-	render() {
-		console.log(this.props.post)
-		const hrsAgo = moment(this.props.post.createdAt).fromNow();
+  render() {
+    console.log(this.props.post)
+    const hrsAgo = moment(this.props.post.createdAt).fromNow();
 		return (
 
-				<Content padder style={{backgroundColor: 'white'}}>
-						{/* carousel */}
+  <Content padder style={{backgroundColor: 'white'}}>
+    {/* carousel */}
 						<Swiper loop={false} height={'50%'} showsButtons={true}>
 							<View>
 								<Image source={require('../../img/nasi-lemak.jpg')} />
