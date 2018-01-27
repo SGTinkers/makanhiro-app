@@ -10,15 +10,17 @@ export default class Login extends Component {
 
   constructor(props){
     super(props);
-    this.state = { MyFbToken: '', jwtToken: '', userId: '' };
+    this.state = { jwtToken: null, userId: null };
   }
 
-  componentWillMount() {
+  async componentWillMount() {
     try {
       console.log('THIS IS LOADED')
 
-      const jwtToken = AsyncStorage.getItem('@MyJwtToken:key');
-      if (jwtToken !== null){
+      const jwtToken = await AsyncStorage.getItem('@MyJwtToken:key')
+                                   .then( res => this.setState({ jwtToken: res }) )
+      console.log(`jwtToken ${this.state.jwtToken}`);
+      if (this.state.jwtToken !== null){
         this.setState({ jwtToken });
         Actions.browsePost();
       }
@@ -35,12 +37,14 @@ export default class Login extends Component {
       });
 
       try {
-        fetch(`${API+AUTH_PATH}?fbToken=${token}`)
-             .then(response => this.setState( { jwtToken: response._bodyInit.token } ) )
+        await fetch(`${API+AUTH_PATH}?fbToken=${token}`)
+             .then( response => response.json() )
+             .then( res => {
+               AsyncStorage.setItem('@MyJwtToken:key', res.token)
+               return this.setState({ jwtToken: res.token, userId: res.userId })
+             } )
              .catch( err => console.error(err) );
 
-        // save jwtToken to AsyncStorage
-        await AsyncStorage.setItem('@MyJwtToken:key', this.state.jwtToken );
         Actions.browsePost();
       } catch(error) {
         console.error(error);
