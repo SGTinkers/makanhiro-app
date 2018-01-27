@@ -4,14 +4,14 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import moment from 'moment';
 
 import { Button,
-		 Card,
-		 CardItem,
-		 Body,
-		 Text,
-		 Left,
-		 Right,
-		 Icon,
-		  } from 'native-base';
+  Card,
+  CardItem,
+  Body,
+  Text,
+  Left,
+  Right,
+  Icon,
+} from 'native-base';
 
 import { Actions } from 'react-native-router-flux';
 
@@ -20,29 +20,29 @@ import styles from '../styles/MainStyles';
 
 export default class SinglePost extends Component {
 
-	getImg() {
-		const posterId = this.props.post.posterId;
-		const fileNameWExt = this.props.post.images[0];
-		const url = `http://localhost:8080/images/${posterId}/${fileNameWExt}`;
+  getImg() {
+    const posterId = this.props.post.posterId;
+    const fileNameWExt = this.props.post.images[0];
+    const url = `http://localhost:8080/images/${posterId}/${fileNameWExt}`;
 
-		return url;
-	}
-
-
-	render() {
-		const editOrLike = 'create';
-		const post = this.props.post;
-		// console.log(`this is POST ${JSON.stringify(post)}`);
-		const img = post.images[0];
+    return url;
+  }
 
 
-		const { pin, location, time } = styles;
-		const hrsAgo = moment(this.props.post.createdAt).fromNow();
+  render() {
+    const editOrLike = 'create';
+    const post = this.props.post;
+    // console.log(`this is POST ${JSON.stringify(post)}`);
+    const img = post.images[0];
 
-		if (!post){
-			return <Button></Button>;
-		} else {
-			return (
+
+    const { pin, location, time } = styles;
+    const hrsAgo = moment(this.props.post.createdAt).fromNow();
+
+    if (!post) {
+      return <Button></Button>;
+    } else {
+      return (
 					<Card>
 						<CardItem button onPress={ () => Actions.viewPost({ post })} cardBody style={{height: 100}}>
 							<Image source={require('../../img/nasi-lemak.jpg')} style={{flex: 1}} resizeMode='contain'/>
