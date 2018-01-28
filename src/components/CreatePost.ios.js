@@ -89,14 +89,14 @@ class CreatePost extends Component {
       dietary: dietaryRestriction[0],
       description,
       foodAvailability,
-    }
+    };
 
     formData.append('data', JSON.stringify(params));
     imageObj.map((eachImg, index) => formData.append(`img${index}`, {
       uri: eachImg.uri,
       type: 'image/jpeg',
       name: PostHelpers.getJustImgName(image[index]),
-    }))
+    }));
 
     fetch(API + POST_PATH, {
       method: 'POST',
@@ -119,7 +119,7 @@ class CreatePost extends Component {
       />
       ) : <View />;
 
-		const params = {
+const params = {
 			locationId: locationSelected,
 			expiryTime: moment(this.state.date).format('DD-MM-YYYY hh:mm:ss'),
 			images: image.map( img => this.getJustImgName(img) ),
@@ -144,9 +144,8 @@ class CreatePost extends Component {
 		})
 		.then( res => console.log(res) )
 		.catch( err => console.error(err) )
-
-
 	}
+
 	render() {
 		let { image } = this.state;
 		let { dietaryRestriction } = this.state;

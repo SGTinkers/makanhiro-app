@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage, View, Image } from 'react-native';
 import { SocialIcon } from 'react-native-elements';
 import { Facebook } from 'expo';
 // import axios from 'axios';
@@ -40,19 +40,24 @@ export default class Login extends Component {
         })
         .catch(err => console.error(err));
       Actions.browsePost();
-    } catch(error) {
+    } catch (error) {
       console.error(error);
     }
   }
 
   render() {
     return (
-      <SocialIcon
-        title="Log In With Facebook"
-        button
-        type="facebook"
-        onPress={() => this.logIn()}
-      />
+      <View style={{ flex: 1, backgroundColor: '#fff', padding: 50 }}>
+        <Image source={require('../../img/makanhiro.png')} style={{ flex: 2, alignSelf: 'center' }} resizeMode="contain" />
+        <View style={{ flex: 1, marginTop: 50 }}>
+          <SocialIcon
+            title="Log In With Facebook"
+            button
+            type="facebook"
+            onPress={() => this.logIn()}
+          />
+        </View>
+      </View>
     );
   }
 }

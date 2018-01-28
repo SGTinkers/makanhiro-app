@@ -3,9 +3,6 @@
   "extends": "airbnb",
   // We use 'babel-eslint' mainly for React Native Classes
   "parser": "babel-eslint",
-  "ecmaFeatures": {
-    "classes": true,
-  },
   // We can add/overwrite custom rules here
   rules: {
     // React Native has JSX in JS files

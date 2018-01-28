@@ -1,6 +1,6 @@
 import { AsyncStorage } from 'react-native';
 
-const API = 'http://172.17.143.164:8080/api/v1';
+const API = 'http://172.17.201.17:8080/api/v1';
 const POST_PATH = '/post';
 const AUTH_PATH = '/auth/login';
 const SUBSCRIBE_POST_PATH = '/postSub';
