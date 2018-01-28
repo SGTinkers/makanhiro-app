@@ -120,9 +120,9 @@ class CreatePost extends Component {
       ) : <View />;
 
 		const params = {
-			locationId: locationSelected,
-			expiryTime: moment(this.state.date).format('DD-MM-YYYY hh:mm:ss'),
-			images: image.map( img => this.getJustImgName(img) ),
+      locationId: locationSelected,
+      expiryTime: moment(this.state.date).format('DD-MM-YYYY hh:mm:ss'),
+      images: image.map( img => this.getJustImgName(img) ),
 			dietary: dietaryRestriction[0],
 			description,
 			foodAvailability,
@@ -137,7 +137,6 @@ class CreatePost extends Component {
 		})
 		.then( res => console.log(res) )
 		.catch( err => console.error(err) )
-
 
 	}
 	render() {
@@ -233,9 +232,7 @@ class CreatePost extends Component {
 										</Text>
 									</View>
 								</View>
-
 								{showDatePicker}
-
 							</Form>
 						</View>
 

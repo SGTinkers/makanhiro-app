@@ -44,19 +44,16 @@ export default class SinglePost extends Component {
               <Col size={1}>
                 <Icon name="md-pin" style={pin} />
               </Col>
-              <Col size={11}>
+              <Col size={9}>
                 <Text style={location}>
                   {post.location.locationName}
                 </Text>
                 <Text style={time}>
-                  {hrsAgo}
+                  {post.location.locationDetails}
                 </Text>
               </Col>
             </Grid>
           </Body>
-          <Right>
-            <Icon button onPress={Actions.editPost} name={editOrLike} style={{ color: 'black' }} />
-          </Right>
         </CardItem>
       </Card>
     );

@@ -12,9 +12,9 @@ export default class Login extends Component {
     this.state = { jwtToken: null };
   }
 
-  componentWillMount() {
+  async componentWillMount() {
     try {
-      const jwtToken = AsyncStorage.getItem('@MyJwtToken:key')
+      const jwtToken = await AsyncStorage.getItem('@MyJwtToken:key')
         .then(res => this.setState({ jwtToken: res }));
       // console.log(`jwtToken ${JSON.stringify(jwtToken)}`);
       if (this.state.jwtToken !== null) {

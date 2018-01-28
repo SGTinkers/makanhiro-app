@@ -5,6 +5,7 @@ import { Content, Button, Badge, Left,
   Body, Thumbnail } from 'native-base';
 import Swiper from 'react-native-swiper';
 import moment from 'moment';
+import { Actions } from 'react-native-router-flux';
 
 import { API, POST_PATH, AUTH_TOKEN } from '../util/constants';
 
@@ -46,54 +47,27 @@ export default class ViewDetails extends Component {
               Posted { moment(this.props.post.createdAt).fromNow() } by Me
             </Text>
           </CardItem>
-          <CardItem>
+          <CardItem style={{ flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+            <Text style={{ fontWeight: '700' }}>{this.props.post.location.locationName}</Text>
             <Text style={{ color: '#2b2929', fontWeight: '500' }}>
               {this.props.post.description}
+              {this.props.post.location.locationDetails}
             </Text>
           </CardItem>
           <CardItem footer>
+            <Text style={{ color: '#89898990' }}>Contains: </Text>
             <Badge style={{ backgroundColor: '#4de2c2', height: 14, paddingBottom: 15 }}>
               <Text style={{ color: 'white', fontSize: 10, fontWeight: '600' }}>{this.props.post.dietary}</Text>
             </Badge>
           </CardItem>
         </Card>
 
-        {/* detailed location */}
-        <View padder style={{ flexDirection: 'row', marginTop: '2%' }}>
-          <Icon name="md-pin" style={{ fontSize: 13, marginTop: '1%', marginLeft: '1%' }} />
-          <Body>
-            <Text style={{ color: '#636161', fontSize: 14, textAlign: 'left' }}>
-              {this.props.post.location.locationName}
-              {this.props.post.location.locationDetails}
-            </Text>
-          </Body>
-        </View>
-
-        {/* map */}
-        <View padder style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 60 }}>
-          <Left />
-          <Button large transparent>
-            <Thumbnail large square source={require('../../img/map.png')} style={{ borderRadius: 12, width: '95%', height: 150 }} />
-          </Button>
-        </View>
-
-        {/* subscribe button */}
-        <View padder style={{ flexDirection: 'row', top: 55 }}>
-          <Left />
-          <Button rounded style={{ flex: 2, backgroundColor: '#f40014' }}>
-            <Body>
-              <Text style={{ color: 'white', fontWeight: '600' }}>Subscribe</Text>
-            </Body>
-          </Button>
-          <Right />
-        </View>
-
         {/* delete button */}
         <View padder style={{ flexDirection: 'row', top: 55 }} >
           <Left />
-          <Button onPress={() => this.delete()} rounded style={{ flex: 2, backgroundColor: '#15198c' }}>
+          <Button onPress={() => Actions.editPost() } rounded style={{ flex: 2, backgroundColor: '#15198c' }}>
             <Body>
-              <Text style={{ color: 'white', fontWeight: '600' }} > Delete post </Text>
+              <Text style={{ color: 'white', fontWeight: '600' }} > Edit post </Text>
             </Body>
           </Button>
           <Right />
