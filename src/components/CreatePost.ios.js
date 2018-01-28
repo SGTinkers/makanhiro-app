@@ -1,28 +1,16 @@
 import React, { Component } from 'react';
-import { PixelRatio, DatePickerIOS, Keyboard, AsyncStorage } from 'react-native';
-
-import { Form,
-				 Container,
-				 Content,
-				 Header,
-				 Item as Piece,
-				 Input,
-				 Button,
-				 Text,
-				 Thumbnail,
-				 Badge,
-				 Right,
-				 Body,
-				 Left,
-				 View, Picker, Icon } from 'native-base';
-
-import { ImagePicker } from 'expo';
+import { PixelRatio, DatePickerIOS } from 'react-native';
+import { ImagePicker, FormData } from 'expo';
 import CheckBox from 'react-native-checkbox';
 import moment from 'moment';
+import { Form, Container, Content,
+  Item as Piece, Input, Button,
+  Text, Thumbnail, Right,
+  Left, View, Picker, Icon } from 'native-base';
 
 const Item = Picker.Item;
-import { API, POST_PATH } from '../util/constants';
-
+import { API, POST_PATH, AUTH_TOKEN } from '../util/constants';
+import { PostHelpers } from '../util/helpers';
 // axios config
 const AUTH_TOKEN = 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJBdXRoZW50aWNhdGlvbiIsImlzcyI6Ik1zb2NpZXR5IiwiaWQiOiJkMWVhZWM5M2Y0NGMyOGJkYzk1NTMzNjk4N2Q4MjQ5MWQ0NDRkNDIyZDBlYjU1YTAwMTY5MzBjZGZlODA5MTE1IiwiZW1haWwiOiJoZWFydHppcUBnbWFpbC5jb20ifQ.ZffZgUuqz5S_VRZr2d2hipCPQcbifknuBU31hmeu2-I';
 
@@ -69,38 +57,71 @@ class CreatePost extends Component {
 			aspect: [4, 3],
 		});
 
-		// console.log(result);
+  pickImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      aspect: [4, 3],
+    });
 
-		if (!result.cancelled) {
-			let currImg = this.state.image;
-			currImg.push(result.uri);
-			let imgObjArray = this.state.imageObj;
-			imgObjArray.push(result);
-			this.setState({ image: currImg, imageObj: imgObjArray });
-		}
-	};
+    if (!result.cancelled) {
+      const currImg = this.state.image;
+      currImg.push(result.uri);
+      const imgObjArray = this.state.imageObj;
+      imgObjArray.push(result);
+      this.setState({ image: currImg, imageObj: imgObjArray });
+    }
+  };
 
-	getJustImgName(img) {
-		// console.log(`HI im img: ${img}`);
-		const fullUri = img.split('/');
-		const justUri = fullUri[fullUri.length - 1];
+  post() {
+    const formData = new FormData();
+    const headers = {
+      'Content-Type': 'multipart/form-data',
+      Authorization: AUTH_TOKEN,
+    };
+    const {
+      locationSelected,
+      image,
+      dietaryRestriction,
+      foodAvailability,
+      description,
+      imageObj,
+    } = this.state;
 
-		return justUri;
-	}
-	post() {
+    const params = {
+      locationId: locationSelected,
+      expiryTime: moment(this.state.date).format('DD-MM-yyyy hh:mm:ss'),
+      images: image.map(img => PostHelpers.getJustImgName(img)),
+      dietary: dietaryRestriction[0],
+      description,
+      foodAvailability,
+    };
 
-		let formData = new FormData();
+    formData.append('data', JSON.stringify(params));
+    imageObj.map((eachImg, index) => formData.append(`img${index}`, {
+      uri: eachImg.uri,
+      type: 'image/jpeg',
+      name: PostHelpers.getJustImgName(image[index]),
+    }));
 
-		// config headers
-		const headers = { 'Content-Type': 'multipart/form-data',
-										 	'Authorization': AUTH_TOKEN,
-											};
-		const { locationSelected,
-						image,
-						dietaryRestriction,
-						foodAvailability,
-						description,
-						imageObj } = this.state;
+    fetch(API + POST_PATH, {
+      method: 'POST',
+      headers,
+      body: formData,
+    })
+      .then(res => console.log(res))
+      .catch(err => console.error(err));
+  }
+  render() {
+    const { image } = this.state;
+    const { dietaryRestriction } = this.state;
+    const showDatePicker = this.state.showDatePicker ?
+      (<DatePickerIOS
+        style={{ height: 200 }}
+        date={this.state.date}
+        onDateChange={date => this.setState({ date })}
+        mode="datetime"
+      />
+      ) : <View />;
 
 		const params = {
 			locationId: locationSelected,

@@ -10,10 +10,7 @@ export default class Login extends Component {
 
   constructor(props){
     super(props);
-    this.state = {
-      jwtToken: null,
-      userId: null
-    };
+    this.state = { jwtToken: null, userId: null };
   }
 
   async componentWillMount() {

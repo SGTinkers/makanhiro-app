@@ -1,21 +1,9 @@
 import React, { Component } from 'react';
-import { PixelRatio, DatePickerAndroid, TimePickerAndroid, Keyboard } from 'react-native';
-
-import { Form,
-				 Container,
-				 Content,
-				 Header,
-				 Item as Piece,
-				 Input,
-				 Button,
-				 Text,
-				 Thumbnail,
-				 Badge,
-				 Right,
-				 Body,
-				 Left,
-				 View, Picker, Icon } from 'native-base';
-
+import { PixelRatio, DatePickerAndroid, TimePickerAndroid } from 'react-native';
+import { Form, Container, Content,
+  Item as Piece, Input, Button,
+  Text, Right, Left,
+  View, Picker, Icon } from 'native-base';
 import { ImagePicker } from 'expo';
 import CheckBox from 'react-native-checkbox';
 import moment from 'moment';
@@ -24,7 +12,7 @@ import axios from 'axios';
 import { API, POST_PATH } from '../util/constants';
 
 const AUTH_TOKEN = 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJBdXRoZW50aWNhdGlvbiIsImlzcyI6Ik1zb2NpZXR5IiwiaWQiOiJkYTQ0OGJmMWQ2YzJjNThkMWNmMDhlZGIzOWI0ZmEyOGI3MWRkZDhlYzRkNWY2NTkyODdhOGRiMWZmOTU1OTRkIiwiZW1haWwiOiJnaG9zdG9wczFAaG90bWFpbC5zZyJ9.scztzqjm3z9fAyTQwc1_JBGjZMsk8aQRKzF61Cgy0xA';
-const Item = Picker.Item;
+const { Item } = Picker;
 axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
 axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
