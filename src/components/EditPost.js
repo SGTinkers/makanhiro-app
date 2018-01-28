@@ -27,19 +27,17 @@ class EditPost extends Component {
       <Container>
         <Content padder style={{ backgroundColor: '#f7f7f7' }}>
           {/* photos */}
-          <View style={{
-            flex: 1, flexDirection: 'row', marginTop: 20, marginLeft: 10 }}>
+          <View style={{ flex: 1, flexDirection: 'row', marginTop: 20, marginLeft: 10 }}>
             <Button large transparent style={{ marginRight: 10 }}>
               <Thumbnail large square source={require('../../img/nasi-lemak.jpg')} style={{ borderRadius: 12 }} />
-              <Icon name="md-remove-circle" style={{ position: 'absolute', top: '13%', left: '5%', color: '#00000070', fontSize: 48 }}/>
-            </Button>
-            <Button large transparent style={{ marginRight: 10 }}>
-              <Thumbnail large square source={require('../../img/nasi-lemak.jpg')} style={{borderRadius: 12}}/>
               <Icon name="md-remove-circle" style={{ position: 'absolute', top: '13%', left: '5%', color: '#00000070', fontSize: 48 }} />
-
             </Button>
             <Button large transparent style={{ marginRight: 10 }}>
-              <Thumbnail large square source={require('../../icon/add-photo.png')} style={{borderRadius: 12}}/>
+              <Thumbnail large square source={require('../../img/nasi-lemak.jpg')} style={{ borderRadius: 12 }} />
+              <Icon name="md-remove-circle" style={{ position: 'absolute', top: '13%', left: '5%', color: '#00000070', fontSize: 48 }} />
+            </Button>
+            <Button large transparent style={{ marginRight: 10 }}>
+              <Thumbnail large square source={require('../../icon/add-photo.png')} style={{ borderRadius: 12 }} />
             </Button>
           </View>
 
@@ -55,16 +53,16 @@ class EditPost extends Component {
 
               <Picker
                 textStyle={{ fontSize: 11 }}
-                style={{ alignSelf: 'stretch', marginBottom: 20, borderRadius: 20, borderWidth: 0.5, borderColor: '#d6d7da'}}
+                style={{ alignSelf: 'stretch', marginBottom: 20, borderRadius: 20, borderWidth: 0.5, borderColor: "#d6d7da" }}
                 mode="dropdown"
                 headerStyle={{ backgroundColor: '#b95dd3' }}
                 headerBackButtonTextStyle={{ color: '#fff' }}
                 headerTitleStyle={{ color: '#fff' }}
                 selectedValue={this.state.selected5}
                 onValueChange={this.onValueChange5.bind(this)}
-                >
+              >
 
-                <Item label="A lot" value="key0"/>
+                <Item label="A lot" value="key0" />
                 <Item label="Finishing soon" value="key1" />
                 <Item label="Sufficient" value="key2" />
               </Picker>

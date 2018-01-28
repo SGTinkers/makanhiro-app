@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { PixelRatio, DatePickerIOS } from 'react-native';
+import { PixelRatio, DatePickerIOS, AsyncStorage } from 'react-native';
 import { ImagePicker, FormData } from 'expo';
 import CheckBox from 'react-native-checkbox';
 import moment from 'moment';
@@ -8,47 +8,47 @@ import { Form, Container, Content,
   Text, Thumbnail, Right,
   Left, View, Picker, Icon } from 'native-base';
 
-const Item = Picker.Item;
 import { API, POST_PATH, AUTH_TOKEN } from '../util/constants';
 import { PostHelpers } from '../util/helpers';
-// axios config
-// const AUTH_TOKEN = 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJBdXRoZW50aWNhdGlvbiIsImlzcyI6Ik1zb2NpZXR5IiwiaWQiOiJkMWVhZWM5M2Y0NGMyOGJkYzk1NTMzNjk4N2Q4MjQ5MWQ0NDRkNDIyZDBlYjU1YTAwMTY5MzBjZGZlODA5MTE1IiwiZW1haWwiOiJoZWFydHppcUBnbWFpbC5jb20ifQ.ZffZgUuqz5S_VRZr2d2hipCPQcbifknuBU31hmeu2-I';
+
+const { Item } = Picker;
 
 class CreatePost extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			foodAvailability: '',
-			image: [],
-			imageObj: [],
-			date: new Date(),
-			showDatePicker: false,
-			dietaryRestriction: [],
-			locationSelected: undefined,
-			checkDiet: {
-				halal: false,
-				veg: false,
-			},
-			description: '',
-		};
-	}
+  constructor(props) {
+    super(props);
+    this.state = {
+      foodAvailability: '',
+      image: [],
+      imageObj: [],
+      date: new Date(),
+      showDatePicker: false,
+      dietaryRestriction: [],
+      locationSelected: undefined,
+      checkDiet: {
+        halal: false,
+        veg: false,
+      },
+      description: '',
+    };
+  }
+
+  async componentWillMount() {
+    await AsyncStorage.getItem('@MyJwtToken:key')
+      .then(res => res)
+      .catch(err => console.error(err));
+  }
+
   onFoodAvailabilityChange(value: string) {
-		this.setState({
-			foodAvailability: value
-		});
-	}
+    this.setState({
+      foodAvailability: value,
+    });
+  }
 
   onLocationSelectedChange(value: number) {
-		this.setState({
-			locationSelected: value
-		});
-	}
-
-  _pickImage = async () => {
-		let result = await ImagePicker.launchImageLibraryAsync({
-			allowsEditing: true,
-			aspect: [4, 3],
-		});
+    this.setState({
+      locationSelected: value,
+    });
+  }
 
   pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -63,15 +63,15 @@ class CreatePost extends Component {
       imgObjArray.push(result);
       this.setState({ image: currImg, imageObj: imgObjArray });
     }
-  };
+  }
 
   post() {
     const formData = new FormData();
 
     const headers = {
       'Content-Type': 'multipart/form-data',
-      'Authorization': AUTH_TOKEN,
-    }
+      Authorization: AUTH_TOKEN,
+    };
 
     const {
       locationSelected,
@@ -153,7 +153,7 @@ class CreatePost extends Component {
 	        <Content padder style={{backgroundColor: '#f7f7f7'}}>
 						{/* upload images */}
 						<View style={{flexDirection: 'row', marginTop: 20, marginBottom: 13, marginLeft: 10}}>
-							{ image.length < 3 ? (<Button large transparent style={{marginRight: 10}} onPress={this._pickImage} >
+							{ image.length < 3 ? (<Button large transparent style={{marginRight: 10}} onPress={this.pickImage} >
 																	<Thumbnail large square source={require('../../icon/add-photo.png')} style={{borderRadius: 12}}/>
 																</Button>) : <View></View>}
 
