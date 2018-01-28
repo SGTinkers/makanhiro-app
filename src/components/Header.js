@@ -12,15 +12,12 @@ import {
 import { Actions } from 'react-native-router-flux';
 
 export default class Header extends Component {
-
-  logout() {
-    AsyncStorage.removeItem('@MyJwtToken:key')
-                .then( () => console.log('resolved'), () => console.log('reject') );
+  static logout() {
+    AsyncStorage.removeItem('@MyJwtToken:key');
   }
 
   render() {
-    // console.log(PixelRatio.get())
-   let headTitle = (this.props.header) ? (<Text style={{fontSize: 18}}>{this.props.header}</Text>) : (<Image source={require('../../icon/logo.png')} style={styles.img} resizeMode='contain'/>);
+    const headTitle = (this.props.header) ? (<Text style={{fontSize: 18}}>{this.props.header}</Text>) : (<Image source={require('../../icon/logo.png')} style={styles.img} resizeMode='contain'/>);
 
     let leftIcon = (this.props.header) ? (<Icon button onPress={Actions.browsePost} name='ios-arrow-back-outline' style={{color: 'black'}}/>) : (<Icon name='menu' style={{color: 'black'}}/>);
      return (

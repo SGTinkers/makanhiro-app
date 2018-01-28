@@ -34,8 +34,8 @@ export default class PostList extends Component {
         <Text style={postListHeading}>
           Available Food
         </Text>
-        { posts.map((post) => <SinglePost key={post.postId} post={post} /> )}
+        { posts.map(post => <SinglePost key={post.postId} post={post} />)}
       </Content>
-    )
+    );
   }
 }

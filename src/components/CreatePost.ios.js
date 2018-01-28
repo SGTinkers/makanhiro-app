@@ -35,23 +35,27 @@ class CreatePost extends Component {
 			description: '',
 		};
 	}
-	async componentWillMount() {
+
+  async componentWillMount() {
 		const serverJWT = await AsyncStorage.getItem('@MyJwtToken:key')
 																		 .then( res => res )
 																		 .catch( err => console.error(err) );
 		// console.log(`serverJWT =) ${serverJWT}`)
 	}
-	onFoodAvailabilityChange(value: string) {
+
+  onFoodAvailabilityChange(value: string) {
 		this.setState({
 			foodAvailability: value
 		});
 	}
-	onLocationSelectedChange(value: number) {
+
+  onLocationSelectedChange(value: number) {
 		this.setState({
 			locationSelected: value
 		});
 	}
-	_pickImage = async () => {
+
+  _pickImage = async () => {
 		let result = await ImagePicker.launchImageLibraryAsync({
 			allowsEditing: true,
 			aspect: [4, 3],
@@ -74,10 +78,12 @@ class CreatePost extends Component {
 
   post() {
     const formData = new FormData();
+
     const headers = {
       'Content-Type': 'multipart/form-data',
-      Authorization: AUTH_TOKEN,
-    };
+       Authorization: AUTH_TOKEN,
+    }
+
     const {
       locationSelected,
       image,
@@ -94,14 +100,14 @@ class CreatePost extends Component {
       dietary: dietaryRestriction[0],
       description,
       foodAvailability,
-    };
+    }
 
     formData.append('data', JSON.stringify(params));
     imageObj.map((eachImg, index) => formData.append(`img${index}`, {
       uri: eachImg.uri,
       type: 'image/jpeg',
       name: PostHelpers.getJustImgName(image[index]),
-    }));
+    }))
 
     fetch(API + POST_PATH, {
       method: 'POST',
@@ -111,6 +117,7 @@ class CreatePost extends Component {
       .then(res => console.log(res))
       .catch(err => console.error(err));
   }
+
   render() {
     const { image } = this.state;
     const { dietaryRestriction } = this.state;

@@ -10,25 +10,12 @@ import styles from '../styles/MainStyles';
 import { API, POST_PATH } from '../util/constants';
 
 export default class MyPost extends Component {
-<<<<<<< HEAD
-  async componentWillMount() {
-    await this.setState({
-      post: this.getMyPostOnly(),
-    });
-  }
-  getMyPostOnly() {
-    // get userId first!
-    const userId = 'd1eaec93f44c28bdc955336987d82491d444d422d0eb55a0016930cdfe809115';
-    axios.get(`${API + POST_PATH}?userId=${userId}`)
-      .then(response => this.setState({ post: response.data }));
-=======
 	constructor(props){
     super(props);
     this.state = {
       post: null,
     };
   }
->>>>>>> 119eaf8fa144243e1d485726aba923764abd066f
 
 	async componentWillMount() {
 		const userId = await AsyncStorage.getItem('@MyUserId:key')

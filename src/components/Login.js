@@ -13,13 +13,13 @@ export default class Login extends Component {
     this.state = { jwtToken: null, userId: null };
   }
 
-  async componentWillMount() {
+  componentWillMount() {
     try {
       console.log('THIS IS LOADED')
 
-      const jwtToken = await AsyncStorage.getItem('@MyJwtToken:key')
+      const jwtToken = AsyncStorage.getItem('@MyJwtToken:key')
                                    .then( res => this.setState({ jwtToken: res }) )
-      // console.log(`jwtToken ${this.state.jwtToken}s`);
+      // console.log(`jwtToken ${JSON.stringify(jwtToken)}`);
       if (this.state.jwtToken !== null){
         this.setState({ jwtToken });
         Actions.browsePost();
@@ -31,24 +31,19 @@ export default class Login extends Component {
 
   async logIn() {
 
+      console.log('Trying INITIAL logging in...')
       const { token } = await Facebook.logInWithReadPermissionsAsync('1905777919676190', {
         permissions: ['email'],
       });
 
       try {
-        await fetch(`${API+AUTH_PATH}?fbToken=${token}`)
+        fetch(`${API+AUTH_PATH}?fbToken=${token}`)
              .then( response => response.json() )
              .then( res => {
-<<<<<<< HEAD
-               AsyncStorage.setItem('@MyJwtToken:key', res.token)
-=======
-               console.log(res)
-               AsyncStorage.setItem('@MyJwtToken:key', res.token)
-               AsyncStorage.setItem('@MyUserId:key', res.userId)
->>>>>>> 119eaf8fa144243e1d485726aba923764abd066f
+               await AsyncStorage.setItem('@MyJwtToken:key', res.token)
                return this.setState({ jwtToken: res.token, userId: res.userId })
              } )
-             .catch( err => console.error(`erRor =)): ${err}`) );
+             .catch( err => console.error(err) );
 
         Actions.browsePost();
       } catch(error) {
