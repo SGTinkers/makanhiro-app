@@ -37,10 +37,10 @@ export default class Login extends Component {
       });
 
       try {
-        fetch(`${API+AUTH_PATH}?fbToken=${token}`)
+        await fetch(`${API+AUTH_PATH}?fbToken=${token}`)
              .then( response => response.json() )
              .then( res => {
-               await AsyncStorage.setItem('@MyJwtToken:key', res.token)
+               AsyncStorage.setItem('@MyJwtToken:key', res.token)
                return this.setState({ jwtToken: res.token, userId: res.userId })
              } )
              .catch( err => console.error(err) );

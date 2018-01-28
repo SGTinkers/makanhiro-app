@@ -12,10 +12,7 @@ const Item = Picker.Item;
 import { API, POST_PATH, AUTH_TOKEN } from '../util/constants';
 import { PostHelpers } from '../util/helpers';
 // axios config
-const AUTH_TOKEN = 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJBdXRoZW50aWNhdGlvbiIsImlzcyI6Ik1zb2NpZXR5IiwiaWQiOiJkMWVhZWM5M2Y0NGMyOGJkYzk1NTMzNjk4N2Q4MjQ5MWQ0NDRkNDIyZDBlYjU1YTAwMTY5MzBjZGZlODA5MTE1IiwiZW1haWwiOiJoZWFydHppcUBnbWFpbC5jb20ifQ.ZffZgUuqz5S_VRZr2d2hipCPQcbifknuBU31hmeu2-I';
-
-// const serverJWT = AsyncStorage.getItem('@MyJwtToken:key');
-// let AUTH_TOKEN = null;
+// const AUTH_TOKEN = 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJBdXRoZW50aWNhdGlvbiIsImlzcyI6Ik1zb2NpZXR5IiwiaWQiOiJkMWVhZWM5M2Y0NGMyOGJkYzk1NTMzNjk4N2Q4MjQ5MWQ0NDRkNDIyZDBlYjU1YTAwMTY5MzBjZGZlODA5MTE1IiwiZW1haWwiOiJoZWFydHppcUBnbWFpbC5jb20ifQ.ZffZgUuqz5S_VRZr2d2hipCPQcbifknuBU31hmeu2-I';
 
 class CreatePost extends Component {
 	constructor(props) {
@@ -35,14 +32,6 @@ class CreatePost extends Component {
 			description: '',
 		};
 	}
-
-  async componentWillMount() {
-		const serverJWT = await AsyncStorage.getItem('@MyJwtToken:key')
-																		 .then( res => res )
-																		 .catch( err => console.error(err) );
-		// console.log(`serverJWT =) ${serverJWT}`)
-	}
-
   onFoodAvailabilityChange(value: string) {
 		this.setState({
 			foodAvailability: value
@@ -81,7 +70,7 @@ class CreatePost extends Component {
 
     const headers = {
       'Content-Type': 'multipart/form-data',
-       Authorization: AUTH_TOKEN,
+      'Authorization': AUTH_TOKEN,
     }
 
     const {
@@ -138,14 +127,7 @@ class CreatePost extends Component {
 			description,
 			foodAvailability,
 		}
-		// console.log(params);
 		formData.append('data', params);
-		// imageObj.map( (eachImg, index) => formData.append(`img${index}`, {
-		// 	uri: eachImg.uri,
-		// 	type: 'image/jpeg',
-		// 	name: this.getJustImgName(image[index]),
-		// }) );
-
 		console.log(`formData is ${JSON.stringify(formData)}`);
 
 		fetch(API + POST_PATH, {
@@ -276,27 +258,25 @@ class CreatePost extends Component {
 											dietaryRestriction.splice(index, 1);
 											this.setState({ dietaryRestriction })
 										}
-										// console.log('I am checked', this.state.dietaryRestriction)
 									}}
 							/>
 							<CheckBox
 							  label='Vegetarian'
 							  checked={this.state.checkDiet.veg}
 							  onChange={(checked) => {
-									// toggle state
-									this.setState({  checkDiet: {
-										halal: this.state.checkDiet.halal,
-										veg: !this.state.checkDiet.veg,
-									} });
-									if (! dietaryRestriction.includes('VEGETARIAN')){
-										dietaryRestriction.push('VEGETARIAN');
-										this.setState({ dietaryRestriction })
-									} else {
-										const index = dietaryRestriction.indexOf('VEGETARIAN');
-										dietaryRestriction.splice(index, 1);
-										this.setState({ dietaryRestriction })
-									}
-									// console.log('I am checked', this.state.dietaryRestriction)
+										// toggle state
+										this.setState({  checkDiet: {
+											halal: this.state.checkDiet.halal,
+											veg: !this.state.checkDiet.veg,
+										} });
+										if (! dietaryRestriction.includes('VEGETARIAN')){
+											dietaryRestriction.push('VEGETARIAN');
+											this.setState({ dietaryRestriction })
+										} else {
+											const index = dietaryRestriction.indexOf('VEGETARIAN');
+											dietaryRestriction.splice(index, 1);
+											this.setState({ dietaryRestriction })
+										}
 									}}
 							/>
             </View>
