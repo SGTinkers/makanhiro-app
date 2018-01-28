@@ -42,7 +42,7 @@ class CreatePost extends Component {
     });
   }
 
-  _pickImage = async () => {
+  pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
       aspect: [4, 3],
@@ -59,68 +59,90 @@ class CreatePost extends Component {
 
   post() {
     const formData = new FormData();
+    const headers = {
+      'Content-Type': 'multipart/form-data',
+      Authorization: AUTH_TOKEN,
+    };
+    const {
+      locationSelected,
+      image,
+      dietaryRestriction,
+      foodAvailability,
+      description,
+      imageObj,
+    } = this.state;
 
-  // config headers
-		const headers = { 'Content-Type': 'multipart/form-data',
-										 	'Authorization': AUTH_TOKEN,
-											};
-		const { locationSelected,
-            image,
-						dietaryRestriction,
-						foodAvailability,
-						description,
-						imageObj } = this.state;
-
-		// console.log('IMAGEOBJ', imageObj);
-		// dd-MM-yyyy hh:mm:ss
     const params = {
       locationId: locationSelected,
       expiryTime: moment(this.state.date).format('DD-MM-yyyy hh:mm:ss'),
-      images: image.map( img => PostHelpers.getJustImgName(img) ),
+      images: image.map(img => PostHelpers.getJustImgName(img)),
       dietary: dietaryRestriction[0],
       description,
       foodAvailability,
-    }
-    console.log(params);
+    };
+
     formData.append('data', JSON.stringify(params));
-    imageObj.map( (eachImg, index) => formData.append(`img${index}`, {
+    imageObj.map((eachImg, index) => formData.append(`img${index}`, {
       uri: eachImg.uri,
       type: 'image/jpeg',
       name: PostHelpers.getJustImgName(image[index]),
-    }) );
+    }));
 
     fetch(API + POST_PATH, {
       method: 'POST',
       headers,
-      body: formData
+      body: formData,
     })
-    .then( res => console.log(res) )
-		.catch( err => console.error(err) )
+      .then(res => console.log(res))
+      .catch(err => console.error(err));
   }
   render() {
-    let { image } = this.state;
-    let { dietaryRestriction } = this.state;
-    let showDatePicker = this.state.showDatePicker ?
-     <DatePickerIOS
+    const { image } = this.state;
+    const { dietaryRestriction } = this.state;
+    const showDatePicker = this.state.showDatePicker ?
+      (<DatePickerIOS
         style={{ height: 200 }}
-				date={this.state.date} onDateChange={ (date) => this.setState({date}) }
-				mode="datetime" /> : <View />;
-		return (
-     <Container>
-       <Content padder style={{backgroundColor: '#f7f7f7'}}>
-         {/* upload images */}
-         <View style={{flexDirection: 'row', marginTop: 20, marginBottom: 13, marginLeft: 10}}>
-           { image.length < 3 ? (<Button large transparent style={{marginRight: 10}}
-             onPress={this._pickImage} >
-             <Thumbnail large square source={require('../../icon/add-photo.png')} style={{borderRadius: 12}}/>
-	             </Button>) : <View></View>}
+        date={this.state.date}
+        onDateChange={date => this.setState({ date })}
+        mode="datetime"
+      />
+      ) : <View />;
 
-           {
-              image.map( eachImageUri => <Button key={ eachImageUri } large transparent style={{marginRight: 10}}>
-																	<Thumbnail large square source={{ uri: eachImageUri }} style={{borderRadius: 12}}/>
-																</Button> )
-							}
-						</View>
+    return (
+      <Container>
+        <Content padder style={{ backgroundColor: '#f7f7f7' }}>
+          {/* upload images */}
+          <View style={{
+            flexDirection: 'row',
+            marginTop: 20,
+            marginBottom: 13,
+            marginLeft: 10,
+          }}
+          >
+            {image.length < 3 ?
+             (
+               <Button
+                 large
+                 transparent
+                 style={{ marginRight: 10 }}
+                 onPress={this.pickImage}
+               >
+                 <Thumbnail large square source={require('../../icon/add-photo.png')} style={{ borderRadius: 12 }} />
+               </Button>) :
+               <View /> };
+
+            {image.map((eachImageUri) => {
+               (
+                <Button key={eachImageUri} large transparent style={{ marginRight: 10 }}>
+                  <Thumbnail
+                    large
+                    square
+                    source={{ uri: eachImageUri }}
+                    style={{ borderRadius: 12 }}
+                  />
+                </Button>
+              ))}
+				   </View>
 						<View style={{flexDirection: 'row', marginLeft: 10}} >
 							<Icon style={{fontSize: 15, marginRight: 3}} name='information-circle' />
 							<Text style={{alignSelf: 'flex-start', fontStyle: 'italic', fontSize: 10 }}>maximum of 3 photos.</Text>
