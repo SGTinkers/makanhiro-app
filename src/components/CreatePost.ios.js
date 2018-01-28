@@ -119,22 +119,15 @@ class CreatePost extends Component {
       />
       ) : <View />;
 
-const params = {
-			locationId: locationSelected,
-			expiryTime: moment(this.state.date).format('DD-MM-YYYY hh:mm:ss'),
-			images: image.map( img => this.getJustImgName(img) ),
+		const params = {
+      locationId: locationSelected,
+      expiryTime: moment(this.state.date).format('DD-MM-YYYY hh:mm:ss'),
+      images: image.map( img => this.getJustImgName(img) ),
 			dietary: dietaryRestriction[0],
 			description,
 			foodAvailability,
 		}
-		// console.log(params);
 		formData.append('data', params);
-		// imageObj.map( (eachImg, index) => formData.append(`img${index}`, {
-		// 	uri: eachImg.uri,
-		// 	type: 'image/jpeg',
-		// 	name: this.getJustImgName(image[index]),
-		// }) );
-
 		console.log(`formData is ${JSON.stringify(formData)}`);
 
 		fetch(API + POST_PATH, {
@@ -239,9 +232,7 @@ const params = {
 										</Text>
 									</View>
 								</View>
-
 								{showDatePicker}
-
 							</Form>
 						</View>
 
@@ -264,27 +255,25 @@ const params = {
 											dietaryRestriction.splice(index, 1);
 											this.setState({ dietaryRestriction })
 										}
-										// console.log('I am checked', this.state.dietaryRestriction)
 									}}
 							/>
 							<CheckBox
 							  label='Vegetarian'
 							  checked={this.state.checkDiet.veg}
 							  onChange={(checked) => {
-									// toggle state
-									this.setState({  checkDiet: {
-										halal: this.state.checkDiet.halal,
-										veg: !this.state.checkDiet.veg,
-									} });
-									if (! dietaryRestriction.includes('VEGETARIAN')){
-										dietaryRestriction.push('VEGETARIAN');
-										this.setState({ dietaryRestriction })
-									} else {
-										const index = dietaryRestriction.indexOf('VEGETARIAN');
-										dietaryRestriction.splice(index, 1);
-										this.setState({ dietaryRestriction })
-									}
-									// console.log('I am checked', this.state.dietaryRestriction)
+										// toggle state
+										this.setState({  checkDiet: {
+											halal: this.state.checkDiet.halal,
+											veg: !this.state.checkDiet.veg,
+										} });
+										if (! dietaryRestriction.includes('VEGETARIAN')){
+											dietaryRestriction.push('VEGETARIAN');
+											this.setState({ dietaryRestriction })
+										} else {
+											const index = dietaryRestriction.indexOf('VEGETARIAN');
+											dietaryRestriction.splice(index, 1);
+											this.setState({ dietaryRestriction })
+										}
 									}}
 							/>
             </View>
