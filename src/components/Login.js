@@ -13,13 +13,13 @@ export default class Login extends Component {
     this.state = { jwtToken: null, userId: null };
   }
 
-  componentWillMount() {
+  async componentWillMount() {
     try {
       console.log('THIS IS LOADED')
 
-      const jwtToken = AsyncStorage.getItem('@MyJwtToken:key')
+      const jwtToken = await AsyncStorage.getItem('@MyJwtToken:key')
                                    .then( res => this.setState({ jwtToken: res }) )
-      // console.log(`jwtToken ${JSON.stringify(jwtToken)}`);
+      // console.log(`jwtToken ${this.state.jwtToken}s`);
       if (this.state.jwtToken !== null){
         this.setState({ jwtToken });
         Actions.browsePost();
@@ -39,10 +39,16 @@ export default class Login extends Component {
         await fetch(`${API+AUTH_PATH}?fbToken=${token}`)
              .then( response => response.json() )
              .then( res => {
+<<<<<<< HEAD
                AsyncStorage.setItem('@MyJwtToken:key', res.token)
+=======
+               console.log(res)
+               AsyncStorage.setItem('@MyJwtToken:key', res.token)
+               AsyncStorage.setItem('@MyUserId:key', res.userId)
+>>>>>>> 119eaf8fa144243e1d485726aba923764abd066f
                return this.setState({ jwtToken: res.token, userId: res.userId })
              } )
-             .catch( err => console.error(err) );
+             .catch( err => console.error(`erRor =)): ${err}`) );
 
         Actions.browsePost();
       } catch(error) {

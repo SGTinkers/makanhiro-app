@@ -1,19 +1,41 @@
-import React from 'react';
-import { View, Text, Image } from 'react-native';
-import {
-  Content,
-  Button,
-  Badge,
-  Left, Right, Icon,
-  Card, CardItem, Body,
-  Thumbnail } from 'native-base';
+import React, { Component } from 'react';
+import { View, StyleSheet, Text, Image, ScrollView, AsyncStorage } from 'react-native';
+import { Container,
+				 Content,
+				 Button,
+				 Badge,
+			   Left, Right, Icon,
+			   Card, CardItem, Body,
+			   Thumbnail } from 'native-base';
 
 import moment from 'moment';
+import { API, POST_PATH } from '../util/constants';
 
 import Swiper from 'react-native-swiper';
 
 
-const ViewDetails = () => (
+export default class ViewDetails extends Component {
+
+	async delete() {
+		let AUTH_TOKEN = await AsyncStorage.getItem('@MyJwtToken:key')
+																 .then( res => res );
+
+		AUTH_TOKEN = 'Bearer ' + AUTH_TOKEN;
+		console.log(`DELETE POST AUTH TOKEN: ${AUTH_TOKEN}`);
+		const headers = { 'Authorization': AUTH_TOKEN, 'Content-Type': 'application/x-www-form-urlencoded' };
+		// call the api
+		fetch(API + POST_PATH + `?postId=${this.props.post.postId}`, {
+			method: 'DELETE',
+			headers,
+		})
+		.then( res => console.log(res) )
+		.catch( err => console.error(err) )
+	}
+
+	render() {
+		console.log(this.props.post)
+		const hrsAgo = moment(this.props.post.createdAt).fromNow();
+		return (
 
   <Content padder style={{ backgroundColor: 'white' }}>
     {/* carousel */}
@@ -80,7 +102,18 @@ const ViewDetails = () => (
       <Right />
     </View>
 
-  </Content>
-);
+						{/* delete button */}
+						<View padder style={{flexDirection: 'row', top: 55}}>
+							<Left />
+							<Button onPress={ () => this.delete() } rounded style={{flex: 2, backgroundColor: '#15198c'}}>
+								<Body>
+									<Text style={{color: 'white', fontWeight: '600'}}>Delete post</Text>
+								</Body>
+							</Button>
+							<Right />
+						</View>
 
-module.export = ViewDetails;
+				</Content>
+		)
+	}
+}

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, StyleSheet, PixelRatio } from 'react-native';
+import { Alert, View, Text, Image, StyleSheet, PixelRatio, AsyncStorage } from 'react-native';
 import {
   Header as OldHeader,
   Left,
@@ -12,6 +12,11 @@ import {
 import { Actions } from 'react-native-router-flux';
 
 export default class Header extends Component {
+
+  logout() {
+    AsyncStorage.removeItem('@MyJwtToken:key')
+                .then( () => console.log('resolved'), () => console.log('reject') );
+  }
 
   render() {
     // console.log(PixelRatio.get())
@@ -29,7 +34,7 @@ export default class Header extends Component {
           {headTitle}
         </Body>
         <Right>
-          <Button small transparent>
+          <Button onPress={ () => this.logout() } small transparent>
             <Icon ios='ios-notifications-outline' android='md-notifications' style={{color: 'black'}}/>
           </Button>
         </Right>

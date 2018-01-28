@@ -8,39 +8,54 @@ import { Form, Container, Content,
   Text, Thumbnail, Right,
   Left, View, Picker, Icon } from 'native-base';
 
+const Item = Picker.Item;
 import { API, POST_PATH, AUTH_TOKEN } from '../util/constants';
 import { PostHelpers } from '../util/helpers';
+// axios config
+const AUTH_TOKEN = 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJBdXRoZW50aWNhdGlvbiIsImlzcyI6Ik1zb2NpZXR5IiwiaWQiOiJkMWVhZWM5M2Y0NGMyOGJkYzk1NTMzNjk4N2Q4MjQ5MWQ0NDRkNDIyZDBlYjU1YTAwMTY5MzBjZGZlODA5MTE1IiwiZW1haWwiOiJoZWFydHppcUBnbWFpbC5jb20ifQ.ZffZgUuqz5S_VRZr2d2hipCPQcbifknuBU31hmeu2-I';
 
-const { Item } = Picker;
+// const serverJWT = AsyncStorage.getItem('@MyJwtToken:key');
+// let AUTH_TOKEN = null;
 
 class CreatePost extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      foodAvailability: '',
-      image: [],
-      imageObj: [],
-      date: new Date(),
-      showDatePicker: false,
-      dietaryRestriction: [],
-      locationSelected: undefined,
-      checkDiet: {
-        halal: false,
-        veg: false,
-      },
-      description: '',
-    };
-  }
-  onFoodAvailabilityChange(value: string) {
-    this.setState({
-      foodAvailability: value,
-    });
-  }
-  onLocationSelectedChange(value: number) {
-    this.setState({
-      locationSelected: value,
-    });
-  }
+	constructor(props) {
+		super(props);
+		this.state = {
+			foodAvailability: '',
+			image: [],
+			imageObj: [],
+			date: new Date(),
+			showDatePicker: false,
+			dietaryRestriction: [],
+			locationSelected: undefined,
+			checkDiet: {
+				halal: false,
+				veg: false,
+			},
+			description: '',
+		};
+	}
+	async componentWillMount() {
+		const serverJWT = await AsyncStorage.getItem('@MyJwtToken:key')
+																		 .then( res => res )
+																		 .catch( err => console.error(err) );
+		// console.log(`serverJWT =) ${serverJWT}`)
+	}
+	onFoodAvailabilityChange(value: string) {
+		this.setState({
+			foodAvailability: value
+		});
+	}
+	onLocationSelectedChange(value: number) {
+		this.setState({
+			locationSelected: value
+		});
+	}
+	_pickImage = async () => {
+		let result = await ImagePicker.launchImageLibraryAsync({
+			allowsEditing: true,
+			aspect: [4, 3],
+		});
 
   pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -108,41 +123,57 @@ class CreatePost extends Component {
       />
       ) : <View />;
 
-    return (
-      <Container>
-        <Content padder style={{ backgroundColor: '#f7f7f7' }}>
-          {/* upload images */}
-          <View style={{
-            flexDirection: 'row',
-            marginTop: 20,
-            marginBottom: 13,
-            marginLeft: 10,
-          }}
-          >
-            {image.length < 3 ?
-             (
-               <Button
-                 large
-                 transparent
-                 style={{ marginRight: 10 }}
-                 onPress={this.pickImage}
-               >
-                 <Thumbnail large square source={require('../../icon/add-photo.png')} style={{ borderRadius: 12 }} />
-               </Button>) :
-               <View /> };
+		const params = {
+			locationId: locationSelected,
+			expiryTime: moment(this.state.date).format('DD-MM-YYYY hh:mm:ss'),
+			images: image.map( img => this.getJustImgName(img) ),
+			dietary: dietaryRestriction[0],
+			description,
+			foodAvailability,
+		}
+		// console.log(params);
+		formData.append('data', params);
+		// imageObj.map( (eachImg, index) => formData.append(`img${index}`, {
+		// 	uri: eachImg.uri,
+		// 	type: 'image/jpeg',
+		// 	name: this.getJustImgName(image[index]),
+		// }) );
 
-            {image.map((eachImageUri) => {
-               (
-                <Button key={eachImageUri} large transparent style={{ marginRight: 10 }}>
-                  <Thumbnail
-                    large
-                    square
-                    source={{ uri: eachImageUri }}
-                    style={{ borderRadius: 12 }}
-                  />
-                </Button>
-              ))}
-				   </View>
+		console.log(`formData is ${JSON.stringify(formData)}`);
+
+		fetch(API + POST_PATH, {
+			method: 'POST',
+			headers,
+			body: formData
+		})
+		.then( res => console.log(res) )
+		.catch( err => console.error(err) )
+
+
+	}
+	render() {
+		let { image } = this.state;
+		let { dietaryRestriction } = this.state;
+		let showDatePicker = this.state.showDatePicker ?
+			<DatePickerIOS
+				style={{ height: 200 }}
+				date={this.state.date} onDateChange={ (date) => this.setState({date}) }
+				mode="datetime" /> : <View />;
+		return (
+	      <Container>
+	        <Content padder style={{backgroundColor: '#f7f7f7'}}>
+						{/* upload images */}
+						<View style={{flexDirection: 'row', marginTop: 20, marginBottom: 13, marginLeft: 10}}>
+							{ image.length < 3 ? (<Button large transparent style={{marginRight: 10}} onPress={this._pickImage} >
+																	<Thumbnail large square source={require('../../icon/add-photo.png')} style={{borderRadius: 12}}/>
+																</Button>) : <View></View>}
+
+							{
+								image.map( eachImageUri => <Button key={ eachImageUri } large transparent style={{marginRight: 10}}>
+																	<Thumbnail large square source={{ uri: eachImageUri }} style={{borderRadius: 12}}/>
+																</Button> )
+							}
+						</View>
 						<View style={{flexDirection: 'row', marginLeft: 10}} >
 							<Icon style={{fontSize: 15, marginRight: 3}} name='information-circle' />
 							<Text style={{alignSelf: 'flex-start', fontStyle: 'italic', fontSize: 10 }}>maximum of 3 photos.</Text>
