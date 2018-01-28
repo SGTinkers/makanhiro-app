@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { Content, Text, View } from 'native-base';
 import axios from 'axios';
-
-import SinglePost from './SinglePost';
+import SinglePost from './SinglePost.ios';
 
 // import style
 import styles from '../styles/MainStyles';
@@ -12,13 +11,13 @@ export default class PostList extends Component {
   async componentWillMount() {
     await this.setState({
       post: this.getAllPosts(),
-    })
+    });
   }
 
-  getAllPosts(user = null) {
-    const postEntries = axios.get(API + POST_PATH).then((response) => {
+  getAllPosts() {
+    axios.get(API + POST_PATH).then((response) => {
       // console.log(`hello ${response}`)
-      this.setState({ post: response.data })
+      this.setState({ post: response.data });
     });
   }
 
@@ -26,7 +25,7 @@ export default class PostList extends Component {
     const posts = this.state.post;
     // console.log(`All post: ${posts}`);
     if (!posts) {
-      return <View />
+      return <View />;
     }
     const { postListHeading } = styles;
 
@@ -35,11 +34,7 @@ export default class PostList extends Component {
         <Text style={postListHeading}>
           Available Food
         </Text>
-        {
-          posts.map((post) => {
-          return <SinglePost key={post.postId} post={post} />
-        })
-    }
+        { posts.map((post) => <SinglePost key={post.postId} post={post} /> )}
       </Content>
     )
   }

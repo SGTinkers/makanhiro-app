@@ -12,12 +12,13 @@ export default class MyPost extends Component {
   async componentWillMount() {
     await this.setState({
       post: this.getMyPostOnly(),
-    })
+    });
   }
   getMyPostOnly() {
     // get userId first!
     const userId = 'd1eaec93f44c28bdc955336987d82491d444d422d0eb55a0016930cdfe809115';
-    axios.get(`${API + POST_PATH}?userId=${userId}`).then(response => this.setState({ post: response.data }))
+    axios.get(`${API + POST_PATH}?userId=${userId}`)
+      .then(response => this.setState({ post: response.data }));
 
     // return postEntries;
   }

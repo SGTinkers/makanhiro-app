@@ -31,16 +31,15 @@ export default class Login extends Component {
 
   async logIn() {
 
-      console.log('Trying INITIAL logging in...')
       const { token } = await Facebook.logInWithReadPermissionsAsync('1905777919676190', {
         permissions: ['email'],
       });
 
       try {
-        fetch(`${API+AUTH_PATH}?fbToken=${token}`)
+        await fetch(`${API+AUTH_PATH}?fbToken=${token}`)
              .then( response => response.json() )
              .then( res => {
-               await AsyncStorage.setItem('@MyJwtToken:key', res.token)
+               AsyncStorage.setItem('@MyJwtToken:key', res.token)
                return this.setState({ jwtToken: res.token, userId: res.userId })
              } )
              .catch( err => console.error(err) );
