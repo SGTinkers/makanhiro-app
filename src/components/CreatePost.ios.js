@@ -24,10 +24,10 @@ const Item = Picker.Item;
 import { API, POST_PATH } from '../util/constants';
 
 // axios config
-// const AUTH_TOKEN = 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJBdXRoZW50aWNhdGlvbiIsImlzcyI6Ik1zb2NpZXR5IiwiaWQiOiJkYTQ0OGJmMWQ2YzJjNThkMWNmMDhlZGIzOWI0ZmEyOGI3MWRkZDhlYzRkNWY2NTkyODdhOGRiMWZmOTU1OTRkIiwiZW1haWwiOiJnaG9zdG9wczFAaG90bWFpbC5zZyJ9.scztzqjm3z9fAyTQwc1_JBGjZMsk8aQRKzF61Cgy0xA';
+const AUTH_TOKEN = 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJBdXRoZW50aWNhdGlvbiIsImlzcyI6Ik1zb2NpZXR5IiwiaWQiOiJkMWVhZWM5M2Y0NGMyOGJkYzk1NTMzNjk4N2Q4MjQ5MWQ0NDRkNDIyZDBlYjU1YTAwMTY5MzBjZGZlODA5MTE1IiwiZW1haWwiOiJoZWFydHppcUBnbWFpbC5jb20ifQ.ZffZgUuqz5S_VRZr2d2hipCPQcbifknuBU31hmeu2-I';
 
-const serverJWT = AsyncStorage.getItem('@MyFbToken:serverToken');
-const AUTH_TOKEN = `Bearer ${serverJWT}`;
+// const serverJWT = AsyncStorage.getItem('@MyJwtToken:key');
+// let AUTH_TOKEN = null;
 
 class CreatePost extends Component {
 	constructor(props) {
@@ -46,6 +46,12 @@ class CreatePost extends Component {
 			},
 			description: '',
 		};
+	}
+	async componentWillMount() {
+		const serverJWT = await AsyncStorage.getItem('@MyJwtToken:key')
+																		 .then( res => res )
+																		 .catch( err => console.error(err) );
+		// console.log(`serverJWT =) ${serverJWT}`)
 	}
 	onFoodAvailabilityChange(value: string) {
 		this.setState({
@@ -96,23 +102,23 @@ class CreatePost extends Component {
 						description,
 						imageObj } = this.state;
 
-		// console.log('IMAGEOBJ', imageObj);
-		// dd-MM-yyyy hh:mm:ss
 		const params = {
 			locationId: locationSelected,
-			expiryTime: moment(this.state.date).format('DD-MM-yyyy hh:mm:ss'),
+			expiryTime: moment(this.state.date).format('DD-MM-YYYY hh:mm:ss'),
 			images: image.map( img => this.getJustImgName(img) ),
 			dietary: dietaryRestriction[0],
 			description,
 			foodAvailability,
 		}
-		console.log(params);
-		formData.append('data', JSON.stringify(params));
-		imageObj.map( (eachImg, index) => formData.append(`img${index}`, {
-			uri: eachImg.uri,
-			type: 'image/jpeg',
-			name: this.getJustImgName(image[index]),
-		}) );
+		// console.log(params);
+		formData.append('data', params);
+		// imageObj.map( (eachImg, index) => formData.append(`img${index}`, {
+		// 	uri: eachImg.uri,
+		// 	type: 'image/jpeg',
+		// 	name: this.getJustImgName(image[index]),
+		// }) );
+
+		console.log(`formData is ${JSON.stringify(formData)}`);
 
 		fetch(API + POST_PATH, {
 			method: 'POST',
@@ -121,6 +127,8 @@ class CreatePost extends Component {
 		})
 		.then( res => console.log(res) )
 		.catch( err => console.error(err) )
+
+
 	}
 	render() {
 		let { image } = this.state;

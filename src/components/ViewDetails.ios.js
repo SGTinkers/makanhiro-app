@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Text, Image, ScrollView } from 'react-native';
+import { View, StyleSheet, Text, Image, ScrollView, AsyncStorage } from 'react-native';
 import { Container,
 				 Content,
 				 Button,
@@ -9,6 +9,7 @@ import { Container,
 			   Thumbnail } from 'native-base';
 
 import moment from 'moment';
+import { API, POST_PATH } from '../util/constants';
 
 import { Actions } from 'react-native-router-flux';
 import Swiper from 'react-native-swiper';
@@ -17,6 +18,23 @@ import MyPost from './MyPost';
 import PostList from './PostList';
 
 export default class ViewDetails extends Component {
+
+	async delete() {
+		let AUTH_TOKEN = await AsyncStorage.getItem('@MyJwtToken:key')
+																 .then( res => res );
+
+		AUTH_TOKEN = 'Bearer ' + AUTH_TOKEN;
+		console.log(`DELETE POST AUTH TOKEN: ${AUTH_TOKEN}`);
+		const headers = { 'Authorization': AUTH_TOKEN, 'Content-Type': 'application/x-www-form-urlencoded' };
+		// call the api
+		fetch(API + POST_PATH + `?postId=${this.props.post.postId}`, {
+			method: 'DELETE',
+			headers,
+		})
+		.then( res => console.log(res) )
+		.catch( err => console.error(err) )
+	}
+
 	render() {
 		console.log(this.props.post)
 		const hrsAgo = moment(this.props.post.createdAt).fromNow();
@@ -82,6 +100,17 @@ export default class ViewDetails extends Component {
 							<Button rounded style={{flex: 2, backgroundColor: '#f40014'}}>
 								<Body>
 									<Text style={{color: 'white', fontWeight: '600'}}>Subscribe</Text>
+								</Body>
+							</Button>
+							<Right />
+						</View>
+
+						{/* delete button */}
+						<View padder style={{flexDirection: 'row', top: 55}}>
+							<Left />
+							<Button onPress={ () => this.delete() } rounded style={{flex: 2, backgroundColor: '#15198c'}}>
+								<Body>
+									<Text style={{color: 'white', fontWeight: '600'}}>Delete post</Text>
 								</Body>
 							</Button>
 							<Right />

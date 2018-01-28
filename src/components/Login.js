@@ -10,7 +10,10 @@ export default class Login extends Component {
 
   constructor(props){
     super(props);
-    this.state = { jwtToken: null, userId: null };
+    this.state = {
+      jwtToken: null,
+      userId: null
+    };
   }
 
   async componentWillMount() {
@@ -19,7 +22,7 @@ export default class Login extends Component {
 
       const jwtToken = await AsyncStorage.getItem('@MyJwtToken:key')
                                    .then( res => this.setState({ jwtToken: res }) )
-      console.log(`jwtToken ${this.state.jwtToken}`);
+      // console.log(`jwtToken ${this.state.jwtToken}s`);
       if (this.state.jwtToken !== null){
         this.setState({ jwtToken });
         Actions.browsePost();
@@ -40,10 +43,12 @@ export default class Login extends Component {
         await fetch(`${API+AUTH_PATH}?fbToken=${token}`)
              .then( response => response.json() )
              .then( res => {
+               console.log(res)
                AsyncStorage.setItem('@MyJwtToken:key', res.token)
+               AsyncStorage.setItem('@MyUserId:key', res.userId)
                return this.setState({ jwtToken: res.token, userId: res.userId })
              } )
-             .catch( err => console.error(err) );
+             .catch( err => console.error(`erRor =)): ${err}`) );
 
         Actions.browsePost();
       } catch(error) {
