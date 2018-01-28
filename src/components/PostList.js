@@ -15,19 +15,18 @@ export default class PostList extends Component {
     })
   }
 
-  getAllPosts(user=null) {
-    const postEntries = axios.get(API+POST_PATH).then(response => {
-    // console.log(`hello ${response}`)
-    this.setState({post: response.data})
-    })
-
+  getAllPosts(user = null) {
+    const postEntries = axios.get(API + POST_PATH).then((response) => {
+      // console.log(`hello ${response}`)
+      this.setState({ post: response.data })
+    });
   }
 
   render() {
-    posts = this.state.post;
+    const posts = this.state.post;
     // console.log(`All post: ${posts}`);
     if (!posts) {
-      return <View></View>
+      return <View />
     }
     const { postListHeading } = styles;
 
@@ -37,8 +36,8 @@ export default class PostList extends Component {
           Available Food
         </Text>
         {
-          posts.map((post)=>{
-          return <SinglePost key={post.postId} post={post}/>
+          posts.map((post) => {
+          return <SinglePost key={post.postId} post={post} />
         })
     }
       </Content>
