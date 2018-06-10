@@ -20,9 +20,9 @@ const RouterComponent = () => {
 	return (
 	  <Router>
 	      <Stack key="root">
-	        <Scene key="login" component={Login} title="login" initial />
+	        <Scene key="login" component={Login} title="login" />
 	      	<Scene key="browsePost" component={BrowsePost}
-						navBar={() => <Header />} />
+						navBar={() => <Header />} initial />
 		      <Scene key="viewPost" component={ViewDetails}
 						navBar={() => <Header header={'Details'} />} />
 	      	<Scene key="createPost" component={CreatePost}
